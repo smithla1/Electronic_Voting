@@ -123,6 +123,9 @@ public class test {
 		for(int i = 0; i<5; i++) {
 		    System.out.println("The salt is: " + sec.generateSalt());
 		}
+	    
+		System.out.println(sec.generateSalt());
+	    System.out.println(sec.generateSalt());
 		
 	}
 	
