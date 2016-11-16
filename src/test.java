@@ -10,6 +10,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
+import java.io.FileWriter;
 
 @SuppressWarnings("unused")
 public class test {
@@ -107,7 +108,7 @@ public class test {
 		System.out.println(hashCode);
 		
 		
-		EncryptionService sec = new EncryptionService();
+		PasswordEncryptionService sec = new PasswordEncryptionService();
 		byte[] salt = sec.generateSalt();
 		
 		byte[] secPass = sec.getEncryptedPassword(userRegistrationID, salt);
@@ -127,6 +128,26 @@ public class test {
 		System.out.println(sec.generateSalt());
 	    System.out.println(sec.generateSalt());
 		
+
+
+
+		try 
+		{
+		    String filename= "MyFile.txt";
+    		FileWriter fw = new FileWriter(filename,true); //the true will append the new data
+    		fw.write("add a line\n");//appends the string to the file
+    		fw.close();
+		}
+
+		catch(IOException ioe)
+		{
+ 		   System.err.println("IOException: " + ioe.getMessage());
+		}
+
+		String[] PID = {"Logan", "Dave", "Bob"};
+		for(int i = 0; i<PID.length; i++) {
+			System.out.println(PID[i]);
+		}
 	}
 	
 
