@@ -15,6 +15,9 @@ public class registrationID {
         //  Index 0: Full name in the format "FIRST MIDDLE LAST"
         //  Index 1: DOB in the format "MM/DD/YYYY"
         //  Index 2: SSN in the format "#########"
+        //      The first three numbers are the area number
+        //      The next two numbers are the group number
+        //      The remaining four numbers are serial numbers
         //
         // This method will create a registration ID that can be used to
         // log into the polls. This registration ID will have the format:
@@ -33,10 +36,10 @@ public class registrationID {
         }
 
         String year_of_birth = PID[1].split("/")[2].substring(2,4);
-        String SSN_group = PID[2].substring(5, 9);
+        String serial_number = PID[2].substring(5, 9);
 
         password.append(year_of_birth);
-        password.append(SSN_group);
+        password.append(serial_number);
 
         return password.toString();
     }
@@ -54,7 +57,7 @@ public class registrationID {
     }
     
     public static void main(String[] args) {
-        String[] PID = {"Logan Smith", "06/20/1995", "123456789"};
+        String[] PID = {"Logan Allen Smith", "06/20/1995", "123456789"};
         registrationID regKey = new registrationID(PID);
         System.out.println(regKey.getRegistrationID());
         System.out.println(regKey.getSecureRegistrationID());
