@@ -1,14 +1,22 @@
 import java.security.SecureRandom;
 import java.lang.StringBuffer;
+import java.security.spec.InvalidKeySpecException;
+import java.security.NoSuchAlgorithmException;
 
 public class registrationID {
+    // Plain text registration ID
     private String unsecureRegistrationID;
+    // Encrypted registration ID
     private byte[] secureRegistrationID;
     
-    public registrationID ( String[] PID ) {
+    
+    public registrationID ( String[] PID ) throws NoSuchAlgorithmException,
+            InvalidKeySpecException {
+
         unsecureRegistrationID = createRegistrationID( PID );
         secureRegistrationID = createSecureRegistrationID(unsecureRegistrationID);
     }
+
     
     private String createRegistrationID( String[] PID) {
         // This will work under the assumption that PID has the following contents:
@@ -43,20 +51,35 @@ public class registrationID {
 
         return password.toString();
     }
+
     
-    private byte[] createSecureRegistrationID( String registrationID ) {
-        return new byte[0];
+    private byte[] createSecureRegistrationID( String registrationID )
+            throws NoSuchAlgorithmException, InvalidKeySpecException {
+
+        String password = "THISISTHEMASTERPASSWORD";
+
+        PasswordEncryptionService secure = new PasswordEncryptionService();
+
+        byte[] securePassword = secure.getEncryptedPassword(registrationID,
+            password.getBytes());
+
+        return securePassword;
     }
-    
-    public byte[] getSecureRegistrationID() {
-        return secureRegistrationID;
-    }
+
     
     public String getRegistrationID() {
         return unsecureRegistrationID;
     }
+
+
+    public byte[] getSecureRegistrationID() {
+        return secureRegistrationID;
+    }
+
     
-    public static void main(String[] args) {
+    public static void main(String[] args) throws NoSuchAlgorithmException, 
+            InvalidKeySpecException {
+
         String[] PID = {"Logan Allen Smith", "06/20/1995", "123456789"};
         registrationID regKey = new registrationID(PID);
         System.out.println(regKey.getRegistrationID());
