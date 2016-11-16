@@ -35,9 +35,6 @@ public class registrationID {
         String year_of_birth = PID[1].split("/")[2].substring(2,4);
         String SSN_group = PID[2].substring(5, 9);
 
-        System.out.println(year_of_birth);
-        System.out.println(SSN_group);
-
         password.append(year_of_birth);
         password.append(SSN_group);
 
