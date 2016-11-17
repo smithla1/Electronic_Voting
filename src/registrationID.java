@@ -17,23 +17,29 @@ public class registrationID {
         secureRegistrationID = createSecureRegistrationID(unsecureRegistrationID);
     }
 
-    
+   /**
+    * This will work under the assumption that PID has the following contents:
+    *  Index 0: Full name in the format "FIRST MIDDLE LAST"
+    *  Index 1: DOB in the format "MM/DD/YYYY"
+    *  Index 2: SSN in the format "#########"
+    *    The first three numbers are the area number
+    *    The next two numbers are the group number
+    *    The remaining four numbers are serial numbers
+    *
+    * This method will create a registration ID that can be used to
+    * log into the polls. This registration ID will have the format:
+    *  ####-####-####-####
+    * The first 10 numbers will be randomly generated. The 11th and
+    * 12th numbers shall be the last two digits of the year of birth.
+    * The remaining 4 numbers will be the last four digits of a the
+    * given social security number.
+    *
+    * @param  PID a string array containing a user's full name, their
+    *             date of birth, and their social security number
+    * @return     The registration ID created from the user's
+    *             personally identifiable information
+    */
     private String createRegistrationID( String[] PID) {
-        // This will work under the assumption that PID has the following contents:
-        //  Index 0: Full name in the format "FIRST MIDDLE LAST"
-        //  Index 1: DOB in the format "MM/DD/YYYY"
-        //  Index 2: SSN in the format "#########"
-        //      The first three numbers are the area number
-        //      The next two numbers are the group number
-        //      The remaining four numbers are serial numbers
-        //
-        // This method will create a registration ID that can be used to
-        // log into the polls. This registration ID will have the format:
-        //  ####-####-####-####
-        // The first 10 numbers will be randomly generated. The 11th and
-        // 12th numbers shall be the last two digits of the year of birth.
-        // The remaining 4 numbers will be the last four digits of a the
-        // given social security number.
 
         char[] allowedChars = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
         SecureRandom random = new SecureRandom();

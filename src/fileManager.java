@@ -9,14 +9,15 @@ import java.io.FileNotFoundException;
 public class fileManager {
     private FileWriter registration_out_file = null;
     private FileReader registration_in_file = null;
-    private String voter_out_file = "voterLogFile.csv";
-    private String voter_in_file = "voterLogFile.csv";
+    private FileWriter voter_out_file = null;
+    private FileReader voter_in_file = null;
     private String results_out_file = "resultsLogFile.csv";
     private String results_in_file = "resultsLogFile.csv";
 
     public fileManager() {
         registration_in_file = null;
     }
+
 
     private void addRegisteredVoter( byte[] encryptedRegistrationID, String[] PID) {
         try {
@@ -37,6 +38,7 @@ public class fileManager {
             System.err.println("IOException: " + e.getMessage());
         }
     }
+
     
     private boolean isRegistered( byte[] encryptedRegistrationID ) {
         try {
@@ -66,22 +68,68 @@ public class fileManager {
             return false;
         }
     }
+
+
+    private void addVote( byte[] encryptedRegistrationID ) {
+
+        try {
+            voter_out_file = new FileWriter("voterLogs.csv", true);
+
+            voter_out_file.write(encryptedRegistrationID.toString());
+            voter_out_file.close();
+            voter_out_file = null;
+
+        } catch (IOException e) {
+            System.err.println("IOException: " + e.getMessage());
+        }        
+    }
+
     
     private boolean hasVoted( byte[] encryptedRegistrationID ) {
-        return false;
+        try {
+            voter_in_file = new FileReader("voterLogs.csv");
+            BufferedReader br = new BufferedReader(voter_in_file);
+
+            String line = br.readLine();
+            while( line != null ) {
+                if ( encryptedRegistrationID.toString().equals(line.split(",")[3])) {
+                    return true;
+                }
+                line = br.readLine();
+            }
+
+            return false;
+
+        } catch (FileNotFoundException fnfe) {
+            // The file was not found
+            // This could mean that no one has case a vote,
+            //  as the file would exist if someone had.
+            // In this case, the person we are checking for hasn't voted
+            //  so we should return false.
+            return false;
+
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+            return false;
+        }
     }
+
+
+    private void castVote(String[] selection, byte[] encryptedRegistrationID) {
+        //addVote(encryptedRegistrationID);
+
+    }
+
     
     private String[] getCandidates() {
         return new String[0];
     }
     
-    private void castVote(String[] selection) {
-        
-    }
-    
+
     private String[] getTalley() {
         return new String[0];
     }
+
 
     public static void main(String[] args) {
         //Create a fileManager class
