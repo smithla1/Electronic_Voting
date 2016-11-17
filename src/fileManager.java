@@ -38,7 +38,7 @@ public class fileManager {
         }
     }
     
-    private boolean inRegistrationDB( byte[] encryptedRegistrationID ) {
+    private boolean isRegistered( byte[] encryptedRegistrationID ) {
         try {
             registration_in_file = new FileReader("regLog.csv");
             BufferedReader br = new BufferedReader(registration_in_file);
@@ -67,7 +67,7 @@ public class fileManager {
         }
     }
     
-    private boolean inVoterDB( byte[] encryptedRegistrationID ) {
+    private boolean hasVoted( byte[] encryptedRegistrationID ) {
         return false;
     }
     
@@ -97,6 +97,6 @@ public class fileManager {
         System.out.print("Logan is registered to vote: ");
 
         //Test finding an entry
-        System.out.println(myManager.inRegistrationDB(testID));
+        System.out.println(myManager.isRegistered(testID));
     }
 }
