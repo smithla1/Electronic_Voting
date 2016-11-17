@@ -5,14 +5,15 @@ import java.io.IOException;
 import java.io.FileReader;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 
 public class fileManager {
     private FileWriter registration_out_file = null;
     private FileReader registration_in_file = null;
     private FileWriter voter_out_file = null;
     private FileReader voter_in_file = null;
-    private String results_out_file = "resultsLogFile.csv";
-    private String results_in_file = "resultsLogFile.csv";
+    private FileWriter results_out_file = null;
+    private FileReader results_in_file = null;
 
     public fileManager() {
         registration_in_file = null;
@@ -111,23 +112,96 @@ public class fileManager {
         } catch (IOException ioe) {
             ioe.printStackTrace();
             return false;
+        
+        } finally {
+            try {
+                if (voter_in_file != null) {
+                voter_in_file.close();
+                voter_in_file = null;
+                }
+            } catch (IOException ioe) {
+                ioe.printStackTrace();
+            }
         }
+
     }
 
-
+   /**
+    * This method will add the voter's encrypted registration ID to the list
+    * of encrypted registration ID's. 
+    *
+    * It will also cast the user's vote. It is important to note that the
+    * user's vote WILL NOT be associated with their registration ID. The
+    * registration ID will be placed in a file that contains the registration
+    * ID of every person that has cast a vote. The candidates that others select
+    * are placed in a different file which is used to keep track of the votes
+    * each candidate has accumulated.
+    *
+    */
     private void castVote(String[] selection, byte[] encryptedRegistrationID) {
-        //addVote(encryptedRegistrationID);
+        // Add their registration ID to the file keeping track of who
+        // all has voted.
+        addVote(encryptedRegistrationID);
 
     }
 
-    
+   /**
+    * This method will return the official candidates for each position.
+    * It will read candidates.csv and look at each line, which has the
+    * following format:
+    *   Position,Candidate,VotesForCandidate,...,WRITE-IN,Candidate,VotesForCandidate,...
+    * In this implementation, the official candidates are in the first
+    * section.
+    */
     private String[] getCandidates() {
-        return new String[0];
+        String[] candidates = parseCandidates();
+        return candidates;
     }
     
 
     private String[] getTalley() {
         return new String[0];
+    }
+
+    private String[] parseCandidates() {
+        try {
+            results_in_file = new FileReader("candidates.csv");
+            BufferedReader br = new BufferedReader(results_in_file);
+
+            ArrayList<String> positions = new ArrayList<String>();
+
+            String line = br.readLine();
+            while (line != null) {
+                positions.add(line);
+                line = br.readLine();
+            }
+
+            String[] information = new String[positions.size()];
+            return positions.toArray(information);
+
+        } catch (FileNotFoundException fnfe) {
+            // The file was not found
+            // This could mean that no candidates have been entered.
+            // There are also no positions which means the file has
+            // not been populated beforehand. This is a critical flaw.
+            // WE NEED TO DECIDE HOW TO HANDLE THIS UPSTREAM
+            return new String[0];
+
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+            return new String[0];
+
+        } finally {
+            try {
+                if (results_in_file != null) {
+                    results_in_file.close();
+                    results_in_file = null;
+                }
+            } catch (IOException ioe) {
+                ioe.printStackTrace();
+            }
+        }
+
     }
 
 
@@ -146,5 +220,10 @@ public class fileManager {
 
         //Test finding an entry
         System.out.println(myManager.isRegistered(testID));
+
+        String[] theCandidates = myManager.getCandidates();
+        for (int i = 0; i<theCandidates.length; i++) {
+            System.out.println(theCandidates[i]);
+        }
     }
 }
