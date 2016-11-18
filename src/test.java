@@ -148,6 +148,28 @@ public class test {
 		for(int i = 0; i<PID.length; i++) {
 			System.out.println(PID[i]);
 		}
+
+
+		System.out.println("Let's mess around with loops");
+		for(int i=0; i<10; i++) {
+			System.out.print("Start: ");
+			System.out.println(i);
+			if (i==5) {
+				i = 6;
+			}
+			System.out.print("End: ");
+			System.out.println(i);
+		}
+
+		String test4 = "This is a";
+		String test5 = "test!";
+
+		String test6 = test4 + test5;
+		System.out.println(test6);
+
+		test4 = "President,Bernard Sanders,0,Ted Cruz,0,WRITE-IN";
+		System.out.println(test4);
+		System.out.println(test4.replaceFirst("Ted Cruz,\\d+","Zodiac Killer,5"));
 	}
 	
 
