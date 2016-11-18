@@ -78,6 +78,8 @@ public class fileManager {
                 }
                 line = br.readLine();
             }
+            br.close();
+            registration_in_file = null;
 
             return false;
 
