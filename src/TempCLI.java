@@ -5,7 +5,21 @@ import java.util.Scanner;
 
 public class TempCLI {
 
-    private static void displayCandidates( String[] selection) {
+    private static boolean running;
+    private static boolean locked;
+    private static Scanner userInput;
+
+    public TempCLI() {
+        running = true;
+        locked = true;
+        userInput = new Scanner(System.in);
+    }
+
+    public boolean isRunning() {
+        return running;
+    }
+
+    private void displayCandidates( String[] selection) {
         for( String choice : selection ) {
             String[] parts = choice.split(",");
 
@@ -17,14 +31,55 @@ public class TempCLI {
         }
     }
 
-	public static void main(String[] args) throws Exception {
+    private void displayAdminOptions(SystemLogic logic) {
+        System.out.println("Please choose an option:\nElection Status\nShutdown\nExit\n");
+        String temp = userInput.nextLine();
 
-    	String name,DOB,SSN,regID,choice,choice2;
+        while (true) {
+            if (!(temp.equalsIgnoreCase("ELECTION STATUS")) &&
+                    !(temp.equalsIgnoreCase("SHUTDOWN")) &&
+                    !(temp.equalsIgnoreCase("EXIT"))) {
+
+                System.out.println("Unrecognized input. Please try again.");
+                temp = userInput.nextLine();                
+            } else {
+                if (temp.equalsIgnoreCase("ELECTION STATUS")) {
+                    String[] results = logic.getTalley();
+                    for (String position : results) {
+                        System.out.println(position);
+                    }
+                    System.out.println("\nPlease enter another command.");
+                    temp = userInput.nextLine();
+                } else if (temp.equalsIgnoreCase("SHUTDOWN")) {
+                    System.out.println("\nShutting down the system.");
+                    running = false;
+                    return;
+                } else {
+                    return;
+                }
+            }
+        }    
+
+    }
+
+	private void run() throws Exception {
+
+        String password;
+        while (locked) {
+            System.out.println("ADMIN, please enter your PIN to unlock the system.");
+            password = userInput.nextLine();
+            if (password.equalsIgnoreCase("1111")) {
+                locked = false;
+            } else {
+                System.out.println("INCORRECT");
+            }
+        }
+
+    	String name,DOB,SSN,regID;
 
     	SystemLogic logic = new SystemLogic();
-    	Scanner userInput = new Scanner(System.in);
 
-
+        System.out.println("\nHello! Welcome to the Electronic Voting System!");
     	System.out.println("Are you registered? (Y/N)");
     	//Here I am grabbing the user input and assigning it to temp and stripping all non alpha characters
         String temp = userInput.nextLine().replaceAll("[^a-zA-Z]+","");
@@ -33,7 +88,7 @@ public class TempCLI {
         	//Segment of CLI to handle registration.
         	if(temp.equalsIgnoreCase("N")){
 
-        		System.out.println("OK beginning registration");
+        		System.out.println("OK, beginning registration process.");
 
         		System.out.println("Please enter your full name in FIRST MIDDLE LAST");
         		//Need to make this safe before final
@@ -69,12 +124,12 @@ public class TempCLI {
         				System.out.println("You have been registered successfully here is your registration number: " + currentUserID.getRegistrationID());
                         System.out.println("Make sure to hold on to that number, as you will need it to vote!");
                         System.out.println("Have a nice day!");
-                        System.exit(0);
+                        return;
         			}
         			else{
         				System.out.println("You are already registered!");
                         System.out.println("Have a nice day!");
-                        System.exit(0);
+                        return;
         			}
         		} catch (Exception e) {
                     e.printStackTrace();
@@ -83,7 +138,6 @@ public class TempCLI {
         		} finally {
                     try {
                         if (userInput != null) {
-                            userInput.close();
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -96,13 +150,37 @@ public class TempCLI {
             	 System.out.println("Please enter your 16 digit registration number");
             	 //takes user input and parses out alpha characters.
             	 regID = userInput.nextLine().replaceAll("[a-zA-Z]+","");
+
+                 //See if they are an administrator
+                 if (regID.substring(12,16).equalsIgnoreCase("0000")) {
+                    //User entered admin registration ID. Prompt for additional identification.
+                    System.out.println("Please enter your password to access admin options: "); 
+                    //password is 1111 for now
+
+                    int count = 0;
+                    while (count < 3) {
+                        temp = userInput.nextLine();
+                        if (temp.equalsIgnoreCase("1111")) {
+                            displayAdminOptions(logic);
+                            break;
+                        } else {
+                            System.out.println("Incorrect Password. Please try again:");
+                            count++;
+                        }
+                    }
+                    if (count == 3) {
+                        System.out.println("Unauthorized access.");
+                        return;
+                    } else {
+                        return;
+                    }
+                 }
             	 //try{
             	 if(logic.userIsRegistered(regID)){
 
                         if (logic.userHasVoted(regID)) {
                             System.out.println("\nAccording to our records, you have already voted.\nPlease note that attempting to vote twice is a type of voter fraud, which is ILLEGAL.\nHave a good day!\n");
-                            userInput.close();
-                            System.exit(0);
+                            return;
                         }
 
                         boolean confirmedSelection = false;
@@ -154,13 +232,11 @@ public class TempCLI {
                             }
 
                             System.out.println("\nYour selections have been recorded!\nThank you for voting!");
-                            userInput.close();
-                            System.exit(0);
+                            return;
                         }
             	 } else {
                     System.out.println("I'm sorry, but you are not registered. Please register before trying to vote.");
-                    userInput.close();
-                    System.exit(0);
+                    return;
                  }	
             }
 
@@ -170,4 +246,16 @@ public class TempCLI {
             }
     	}
 	}
+
+    public static void main(String[] args) throws Exception {
+
+        TempCLI app = new TempCLI();
+
+        while(app.isRunning()) {
+            app.run();
+        }
+        userInput.close();
+        System.out.println("Goodbye");
+
+    }
 }

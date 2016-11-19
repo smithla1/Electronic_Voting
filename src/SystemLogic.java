@@ -97,7 +97,7 @@ public class SystemLogic {
     	System.out.println(selection);
     }
     
-    private String[] getTalley() {
+    protected String[] getTalley() {
     	return myManager.getTalley();
     }
     
