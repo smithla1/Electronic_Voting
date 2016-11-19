@@ -14,7 +14,7 @@ public class registrationID {
             InvalidKeySpecException {
 
         unsecureRegistrationID = createRegistrationID( PID );
-        secureRegistrationID = createSecureRegistrationID(unsecureRegistrationID);
+        //secureRegistrationID = createSecureRegistrationID(unsecureRegistrationID);
     }
 
    /**
