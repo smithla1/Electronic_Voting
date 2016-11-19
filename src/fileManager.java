@@ -74,7 +74,7 @@ public class fileManager {
 
             String line = br.readLine();
             while( line != null ) {
-                if (registrationID.equals(line.split(",")[3].toString())){
+                if (registrationID.equals(line.split(",")[3])){
                     return true;
                 }
                 line = br.readLine();
@@ -177,7 +177,7 @@ public class fileManager {
 
             String line = br.readLine();
             while( line != null ) {
-                if (registrationID.equals(line.split(",")[3])){
+                if (registrationID.equals(line)){
                     return true;
                 }
                 line = br.readLine();
@@ -269,7 +269,7 @@ public class fileManager {
                     // picked
 
                     String[] positionResults = results[i].split(",");
-                    for(int j=1;j<positionResults[i].length(); j=j+2) {
+                    for(int j=1;j<positionResults.length; j=j+2) {
                         //if the last position is "WRITE-IN" and we have not found
                         // the user's candidate, then it's a write in we don't have
                         if (j == positionResults.length-1 && positionResults[j].equals("WRITE-IN")) {

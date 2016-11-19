@@ -171,9 +171,10 @@ public class test {
 		System.out.println(test4);
 		System.out.println(test4.replaceFirst("Ted Cruz,\\d+","Zodiac Killer,5"));
 
-		String thisIsastring1 = "string1";
-		String thisIsastring2 = "string1";
+		String thisIsastring1 = "3702237466956700";
+		String thisIsastring2 = "3702237466956700";
 		System.out.println(thisIsastring1==thisIsastring2);
+		System.out.println(thisIsastring1.equals(thisIsastring2));
 	}
 	
 

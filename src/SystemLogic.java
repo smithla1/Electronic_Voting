@@ -75,8 +75,9 @@ public class SystemLogic {
     
     protected boolean userHasVoted(String registrationID) {
         try {
-			return myManager.hasVoted(currentUserID.getRegistrationID());
+			return myManager.hasVoted(registrationID);
 		} catch (Exception e){
+            e.printStackTrace();
 			System.out.println("There was an error determining if this user has voted");
 			//return true so user cannot vote if an error occurs at this stage.
 			return true;
@@ -88,8 +89,8 @@ public class SystemLogic {
         return candidates;
     }
     
-    protected void castVote(String[] selection) {
-        myManager.castVote(selection, currentUserID.getRegistrationID());
+    protected void castVote(String[] selection, String registrationID) {
+        myManager.castVote(selection, registrationID);
     }
     
     protected void printBallot(String[] selection) { //Different from our third deliverable

@@ -8,7 +8,6 @@ public class TempCLI {
 	public static void main(String[] args) throws Exception {
 
     	String name,DOB,SSN,regID,choice,choice2;
-    	String[] finalSelection = new String[3];
 
     	SystemLogic logic = new SystemLogic();
     	Scanner userInput = new Scanner(System.in);
@@ -55,13 +54,11 @@ public class TempCLI {
                         System.out.println("Have a nice day!");
                         System.exit(0);
         			}
-        		} 
-        		catch (Exception e) {
+        		} catch (Exception e) {
                     e.printStackTrace();
         			System.out.println("There was an error creating registration ID");
         			break;
-        		}
-                finally {
+        		} finally {
                     try {
                         if (userInput != null) {
                             userInput.close();
@@ -70,50 +67,62 @@ public class TempCLI {
                         e.printStackTrace();
                     }
                 }
-        	 
             }
-             //Segment of CLI to handle voting
-             else if(temp.equalsIgnoreCase("Y")){
+
+            //Segment of CLI to handle voting
+            else if(temp.equalsIgnoreCase("Y")){
             	 System.out.println("Please enter your 16 digit registration number");
-            	 //takes user input and parses out non alpha characters.
-            	 regID = userInput.nextLine().replaceAll("[^a-zA-Z]+","");
+            	 //takes user input and parses out alpha characters.
+            	 regID = userInput.nextLine().replaceAll("[a-zA-Z]+","");
             	 //try{
-	            	 if(logic.userIsRegistered(regID)){
-	            		
-                        String[] candidates = logic.getCandidates();
-                        ArrayList<String> selection = new ArrayList<String>();
+            	 if(logic.userIsRegistered(regID)){
+            		
+                    if (logic.userHasVoted(regID)) {
+                        System.out.println("\nAccording to our records, you have already voted.\nPlease note that attempting to vote twice is a type of voter fraud, which is ILLEGAL.\nHave a good day!\n");
+                        userInput.close();
+                        System.exit(0);
+                    }
+                    String[] candidates = logic.getCandidates();
+                    ArrayList<String> selection = new ArrayList<String>();
 
-                        System.out.println("For this part we will show you the position and then the official candidates for that position.\nYou may choose an official candidate or a write in candidate. You may abstain by typing #.\nPlease type your selection carefully.\n");
+                    System.out.println("For this part we will show you the position and then the official candidates for that position.\nYou may choose an official candidate or a write in candidate. You may abstain by typing #.\nPlease type your selection carefully.");
 
-                        for (String position : candidates) {
-                            String[] pieces = position.split(",");
-                            System.out.println("Position: " + pieces[0]);
-                            System.out.print("Candidates: ");
-                            for(int i=1; i<pieces.length; i++) {
-                                if (pieces[i].equals("WRITE-IN")) {
-                                    break;
-                                }
-                                System.out.print(pieces + " || ");
+                    for (String position : candidates) {
+                        String[] pieces = position.split(",");
+                        System.out.println("\nPosition: " + pieces[0]);
+                        System.out.print("Candidates: ");
+                        for(int i=1; i<pieces.length; i++) {
+                            if (pieces[i].equals("WRITE-IN")) {
+                                break;
                             }
-
-                            System.out.print("\nChoose your candidate: ");
-                            selection.add(pieces[0] + "," +userInput.nextLine());
-
+                            System.out.print(pieces[i]);
+                            if (! (i== pieces.length-1)) {
+                                System.out.print(" || ");
+                            }
                         }
-	            		
-                        String[] temp2 = new String[selection.size()];
-                        String[] finalSelection2 = selection.toArray(temp2);
-	            		logic.castVote(finalSelection2);
-                        userInput.close();
-                        System.out.println("Thank you for voting!");
-                        System.exit(0);
-	            	 } else {
-                        System.out.println("I'm sorry, but you are not registered. Please register before trying to vote.");
-                        userInput.close();
-                        System.exit(0);
-                     }	
-	            }
-        	userInput.close();
+
+                        System.out.print("\nChoose your candidate: ");
+                        selection.add(pieces[0] + "," +userInput.nextLine());
+
+                    }
+            		
+                    String[] finalSelection = new String[selection.size()];
+                    finalSelection = selection.toArray(finalSelection);
+            		logic.castVote(finalSelection, regID);
+                    userInput.close();
+                    System.out.println("\nYour selections have been recorded!\nThank you for voting!");
+                    System.exit(0);
+            	 } else {
+                    System.out.println("I'm sorry, but you are not registered. Please register before trying to vote.");
+                    userInput.close();
+                    System.exit(0);
+                 }	
+            }
+
+            else {
+                System.out.println("That input wasn't recognized. Try again.");
+                temp = userInput.nextLine().replaceAll("[^a-zA-Z]+","");
+            }
     	}
 	}
 }
