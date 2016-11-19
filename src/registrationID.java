@@ -90,5 +90,10 @@ public class registrationID {
         registrationID regKey = new registrationID(PID);
         System.out.println(regKey.getRegistrationID());
         System.out.println(regKey.getSecureRegistrationID());
+
+        String[] PID2 = {"Daniel Day Lewis", "07/04/1985", "987654321"};
+        registrationID regKey2 = new registrationID(PID2);
+        System.out.println(regKey2.getRegistrationID());
+        System.out.println(regKey2.getSecureRegistrationID());
     }
 }

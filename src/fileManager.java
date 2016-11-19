@@ -38,7 +38,7 @@ public class fileManager {
                 information.append(PID[i]);
                 information.append(",");
             }
-            information.append(encryptedRegistrationID.toString());
+            information.append(new String(encryptedRegistrationID));
             information.append("\n");
 
             registration_out_file.write(information.toString());
@@ -73,7 +73,7 @@ public class fileManager {
 
             String line = br.readLine();
             while( line != null ) {
-                if (encryptedRegistrationID.toString().equals(line.split(",")[3])){
+                if ((new String(encryptedRegistrationID)).equals(line.split(",")[3])){
                     return true;
                 }
                 line = br.readLine();
@@ -89,6 +89,7 @@ public class fileManager {
             //  as the file would exist if someone had.
             // In this case, the person we are checking for hasn't registered
             //  so we should return false.
+            fnfe.printStackTrace();
             return false;
 
         } catch (IOException ioe) {
@@ -111,7 +112,7 @@ public class fileManager {
         try {
             voter_out_file = new FileWriter("voterLogs.csv", true);
 
-            voter_out_file.write(encryptedRegistrationID.toString()+"\n");
+            voter_out_file.write(new String(encryptedRegistrationID)+"\n");
             voter_out_file.close();
             voter_out_file = null;
 

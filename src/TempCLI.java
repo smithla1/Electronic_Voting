@@ -15,7 +15,6 @@ public class TempCLI {
     	System.out.println("Are you registered? (Y/N)");
     	//Here I am grabbing the user input and assigning it to temp and stripping all non alpha characters
         String temp = userInput.nextLine().replaceAll("[^a-zA-Z]+","");
-        System.out.println("Got here");
         while(!temp.equalsIgnoreCase("Q")){
 
         	//Segment of CLI to handle registration.
@@ -31,6 +30,7 @@ public class TempCLI {
         		DOB = userInput.nextLine();
         		String[] DOBWithoutDelims = DOB.split("/-");
         		DOB = Arrays.toString(DOBWithoutDelims);
+                DOB = DOB.replaceAll("[\\[\\]]", "");
 
         		System.out.println("Please enter your Social Security Number");
         		SSN = userInput.nextLine();
@@ -42,14 +42,24 @@ public class TempCLI {
 
                     //System.out.println(currentUserID.getRegistrationID());
 
-        			if (!logic.userIsRegistered(currentUserID.getSecureRegistrationID())){
+        			//if (!logic.userIsRegistered(currentUserID.getSecureRegistrationID())){
+
+                    System.out.println("This is your secure registration ID: " + currentUserID.getSecureRegistrationID());
+                    System.out.println("This is your secure registration ID: " + currentUserID.getSecureRegistrationID().toString());
+                    System.out.println("This is your secure registration ID: " + new String(currentUserID.getSecureRegistrationID()));
+                    
+
         				logic.registerUser(PID, currentUserID.getSecureRegistrationID());
-        			}
-        			else{
-        				System.out.println("You are already registered!");
-                        System.out.println("Have a nice day!");
+                        System.out.println("You were registered! Congratulations on"
+                            +"doing your civic duty!\nHere is your registration identification number:\n\t"
+                            +currentUserID.getRegistrationID() + "\nYou will need this to vote so keep it safe.");
                         System.exit(0);
-        			}
+        			//}
+        			//else{
+        			//	System.out.println("You are already registered!");
+                    //    System.out.println("Have a nice day!");
+                    //    System.exit(0);
+        			//}
         		} 
         		catch (Exception e) {
                     e.printStackTrace();
@@ -68,7 +78,7 @@ public class TempCLI {
             		 //Here we know that the user is registered.
             		 boolean procede = false;
             		 while (procede != true){
-            			 System.out.println("Here are the canditidates: ");
+            			 System.out.println("Here are the candidates: ");
             			 System.out.println(logic.getCandidates());
             			 System.out.println("Please select your candidate");
             			 choice=userInput.nextLine().replaceAll("[^a-zA-Z]+","");

@@ -42,13 +42,7 @@ public class SystemLogic {
     }
     
     protected void registerUser(String[] PID, byte[] secureRegistrationID) throws Exception{ //The following three methods are different from our deliverable
-    	if (!userIsRegistered(secureRegistrationID)){
-    		//If user is not already registered, register them.
-        	myManager.addRegisteredVoter(secureRegistrationID, PID);
-        }
-    	else{
-    		System.out.println("This voter is already registered");
-    	}
+        myManager.addRegisteredVoter(secureRegistrationID, PID);
     }
     
     protected boolean userIsRegistered(byte[] secureRegistrationID) throws Exception {
