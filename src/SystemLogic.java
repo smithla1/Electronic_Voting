@@ -55,6 +55,23 @@ public class SystemLogic {
     		
         }
     }
+
+    protected boolean userIsRegistered(String[] PID) throws Exception {
+        try{
+            if(myManager.isRegistered(PID)){
+                return true;
+            }
+            else{
+                return false;
+            }
+        }
+        catch(Exception e){
+            e.printStackTrace();
+            System.out.println("There was an error checking if the user was registered");
+            throw e;
+            
+        }
+    }    
     
     protected boolean userHasVoted(String registrationID) {
         try {

@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class fileManager {
     private FileWriter registration_out_file;
@@ -73,7 +74,6 @@ public class fileManager {
 
             String line = br.readLine();
             while( line != null ) {
-                System.out.println("Test\n" + registrationID + "\n" +line.split(",")[3]);
                 if (registrationID.equals(line.split(",")[3])){
                     return true;
                 }
@@ -90,7 +90,7 @@ public class fileManager {
             //  as the file would exist if someone had.
             // In this case, the person we are checking for hasn't registered
             //  so we should return false.
-            fnfe.printStackTrace();
+            
             return false;
 
         } catch (IOException ioe) {
@@ -99,6 +99,39 @@ public class fileManager {
         }
     }
 
+    protected boolean isRegistered( String[] PID ) {
+        try {
+            registration_in_file = new FileReader("regLog.csv");
+            BufferedReader br = new BufferedReader(registration_in_file);
+
+            String line = br.readLine();
+            while( line != null ) {
+                String[] components = line.split(",");
+                String[] subArray = Arrays.copyOfRange(components,0,3);
+                if (Arrays.equals(PID, subArray)){
+                    return true;
+                }
+                line = br.readLine();
+            }
+            br.close();
+            registration_in_file = null;
+
+            return false;
+
+        } catch (FileNotFoundException fnfe) {
+            // The file was not found
+            // This could mean that no one has been registered to vote,
+            //  as the file would exist if someone had.
+            // In this case, the person we are checking for hasn't registered
+            //  so we should return false.
+            
+            return false;
+
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+            return false;
+        }
+    }
 
    /**
     * This method will add a user's registration ID to the

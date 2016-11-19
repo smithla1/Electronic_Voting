@@ -42,15 +42,15 @@ public class TempCLI {
 
                     //System.out.println(currentUserID.getRegistrationID());
 
-        			if (!logic.userIsRegistered(currentUserID.getSecureRegistrationID())){
-        				logic.registerUser(PID, currentUserID.getSecureRegistrationID());
+        			if (!logic.userIsRegistered(PID)){
+        				logic.registerUser(PID, currentUserID.getRegistrationID());
         				System.out.println("You have been registered successfully here is your registration number: " + currentUserID.getRegistrationID());
                         System.out.println("Make sure to hold on to that number, as you will need it to vote!");
                         System.out.println("Have a nice day!");
                         System.exit(0);
         			}
         			else{
-        				System.out.println("You are already registered! registration number (" + currentUserID.getRegistrationID()+ ")");
+        				System.out.println("You are already registered!");
                         System.out.println("Have a nice day!");
                         System.exit(0);
         			}
