@@ -74,7 +74,7 @@ public class fileManager {
 
             String line = br.readLine();
             while( line != null ) {
-                if (registrationID.equals(line.split(",")[3])){
+                if (registrationID.equals(line.split(",")[3].toString())){
                     return true;
                 }
                 line = br.readLine();

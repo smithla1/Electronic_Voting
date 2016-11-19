@@ -1,5 +1,6 @@
 
 import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class TempCLI {
@@ -78,97 +79,39 @@ public class TempCLI {
             	 regID = userInput.nextLine().replaceAll("[^a-zA-Z]+","");
             	 //try{
 	            	 if(logic.userIsRegistered(regID)){
-	            		 //Here we know that the user is registered.
-	            		 boolean procede = false;
-	            		 while (procede != true){
-	            			 System.out.println("Here are the canditidates: ");
-	            			 System.out.println(logic.getCandidates()[0]);
-	            			 System.out.println("Please select your presidential candidate");
-	            			 choice=userInput.nextLine();
-	            			 //This is just a safety check to ensure the chosen candidate is a valid one.
-	            			 boolean contains = false;
-	            			 for (String item : logic.getCandidates()[0].split(",")) {
-	            			     if (choice.equalsIgnoreCase(item)) {
-	            			         contains = true;
-	            			         break; // No need to look further.
-	            			     } 
-	            			 }
-	            			 if (contains){
-	            				 System.out.println("You chose: " + choice.toLowerCase() + " are you sure? (Y/N)");
-	            				 choice2 = userInput.nextLine().replaceAll("[^a-zA-Z]+","");
-	            				 if (choice2.equalsIgnoreCase("Y")){
-	            					 procede = true;
-	            				 }
-	            				 else if(choice2.equalsIgnoreCase("N")){
-	            					 procede = false;
-	            				 }
-	            				 else{
-	            					 System.out.println("Please choose a valid candidate");
-	            				 }
-	            				 finalSelection[0]=choice.toLowerCase();
-	            			 }
-	            		 }
-	            		 procede = false;
-	            		 while (procede != true){
-	            			 System.out.println("Here are the canditidates: ");
-	            			 System.out.println(logic.getCandidates()[1]);
-	            			 System.out.println("Please select your vice presidential candidate");
-	            			 choice=userInput.nextLine();
-	            			 //This is just a safety check to ensure the chosen candidate is a valid one.
-	            			 boolean contains = false;
-	            			 for (String item : logic.getCandidates()[1].split(",")) {
-	            			     if (choice.equalsIgnoreCase(item)) {
-	            			         contains = true;
-	            			         break; // No need to look further.
-	            			     } 
-	            			 }
-	            			 if (contains){
-	            				 System.out.println("You chose: " + choice.toLowerCase() + " are you sure? (Y/N)");
-	            				 choice2 = userInput.nextLine().replaceAll("[^a-zA-Z]+","");
-	            				 if (choice2.equalsIgnoreCase("Y")){
-	            					 procede = true;
-	            				 }
-	            				 else if(choice2.equalsIgnoreCase("N")){
-	            					 procede = false;
-	            				 }
-	            				 else{
-	            					 System.out.println("Please choose a valid candidate");
-	            				 }
-	            				 finalSelection[1]=choice.toLowerCase();
-	            			 }
-	            		 }
-	            		 procede = false;
-	            		 while (procede != true){
-	            			 System.out.println("Here are the canditidates: ");
-	            			 System.out.println(logic.getCandidates()[2]);
-	            			 System.out.println("Please select your senate candidate");
-	            			 choice=userInput.nextLine();
-	            			 //This is just a safety check to ensure the chosen candidate is a valid one.
-	            			 boolean contains = false;
-	            			 for (String item : logic.getCandidates()[2].split(",")) {
-	            			     if (choice.equalsIgnoreCase(item)) {
-	            			         contains = true;
-	            			         break; // No need to look further.
-	            			     } 
-	            			 }
-	            			 if (contains){
-	            				 System.out.println("You chose: " + choice.toLowerCase() + " are you sure? (Y/N)");
-	            				 choice2 = userInput.nextLine().replaceAll("[^a-zA-Z]+","");
-	            				 if (choice2.equalsIgnoreCase("Y")){
-	            					 procede = true;
-	            				 }
-	            				 else if(choice2.equalsIgnoreCase("N")){
-	            					 procede = false;
-	            				 }
-	            				 else{
-	            					 System.out.println("Please choose a valid candidate");
-	            				 }
-	            				 finalSelection[2]=choice.toLowerCase();
-	            			 }
-	            		 }
-	            		 
-	            		 logic.castVote(finalSelection);
-	            	 }	
+	            		
+                        String[] candidates = logic.getCandidates();
+                        ArrayList<String> selection = new ArrayList<String>();
+
+                        System.out.println("For this part we will show you the position and then the official candidates for that position.\nYou may choose an official candidate or a write in candidate. You may abstain by typing #.\nPlease type your selection carefully.\n");
+
+                        for (String position : candidates) {
+                            String[] pieces = position.split(",");
+                            System.out.println("Position: " + pieces[0]);
+                            System.out.print("Candidates: ");
+                            for(int i=1; i<pieces.length; i++) {
+                                if (pieces[i].equals("WRITE-IN")) {
+                                    break;
+                                }
+                                System.out.print(pieces + " || ");
+                            }
+
+                            System.out.print("\nChoose your candidate: ");
+                            selection.add(pieces[0] + "," +userInput.nextLine());
+
+                        }
+	            		
+                        String[] temp2 = new String[selection.size()];
+                        String[] finalSelection2 = selection.toArray(temp2);
+	            		logic.castVote(finalSelection2);
+                        userInput.close();
+                        System.out.println("Thank you for voting!");
+                        System.exit(0);
+	            	 } else {
+                        System.out.println("I'm sorry, but you are not registered. Please register before trying to vote.");
+                        userInput.close();
+                        System.exit(0);
+                     }	
 	            }
         	userInput.close();
     	}

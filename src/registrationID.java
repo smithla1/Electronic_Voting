@@ -48,7 +48,6 @@ public class registrationID {
         for(int i = 0; i < 10; i++) {
             password.append(allowedChars[ random.nextInt(allowedChars.length) ]);
         }
-
         String year_of_birth = PID[1].split("/")[2].substring(2,4);
         String serial_number = PID[2].substring(5, 9);
 
