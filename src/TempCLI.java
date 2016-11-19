@@ -83,6 +83,7 @@ public class TempCLI {
     	 System.out.println("Please enter Y or N (or Q to quit)"); 
      }
     temp = userInput.next(); 
-	} 
+	}
+    userInput.close();
 	}
 }
