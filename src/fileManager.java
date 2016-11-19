@@ -8,12 +8,12 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
 public class fileManager {
-    private FileWriter registration_out_file = null;
-    private FileReader registration_in_file = null;
-    private FileWriter voter_out_file = null;
-    private FileReader voter_in_file = null;
-    private FileWriter results_out_file = null;
-    private FileReader results_in_file = null;
+    private FileWriter registration_out_file;
+    private FileReader registration_in_file;
+    private FileWriter voter_out_file;
+    private FileReader voter_in_file;
+    private FileWriter results_out_file;
+    private FileReader results_in_file;
 
     public fileManager() {
         //Do nothing

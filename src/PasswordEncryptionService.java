@@ -1,3 +1,18 @@
+/**
+ * PLEASE NOTE: CREDIT FOR THIS CODE GOES TOWARDS JERRY ORR, WHO WROTE
+ *              THE ORIGIONAL VERSION OF THIS CODE. FOR THE PURPOSE OF
+ *              OUR PROJECT, WE MODIFIED THE NAMES OF SOME METHOD AND
+ *              PARAMETERS TO BETTER FIT OUR PROJECT.
+ *              
+ * 
+ * The website where Jerry Orr broached the subject of security
+ * practices and proposed the original version of this class can
+ * be found here:
+ *  http://blog.jerryorr.com/2012/05/secure-password-storage-lots-of-donts.html
+ * 
+ */
+
+
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
