@@ -73,6 +73,9 @@ public class fileManager {
 
             String line = br.readLine();
             while( line != null ) {
+                for (String temp : line.split(",")) {
+                    System.out.println(temp);
+                }
                 if ((new String(encryptedRegistrationID)).equals(line.split(",")[3])){
                     return true;
                 }

@@ -45,6 +45,9 @@ public class TempCLI {
         			if (!logic.userIsRegistered(currentUserID.getSecureRegistrationID())){
         				logic.registerUser(PID, currentUserID.getSecureRegistrationID());
         				System.out.println("You have been registered successfully here is your registration number: " + currentUserID.getRegistrationID());
+                        System.out.println("Make sure to hold on to that number, as you will need it to vote!");
+                        System.out.println("Have a nice day!");
+                        System.exit(0);
         			}
         			else{
         				System.out.println("You are already registered! registration number (" + currentUserID.getRegistrationID()+ ")");
@@ -57,6 +60,15 @@ public class TempCLI {
         			System.out.println("There was an error creating registration ID");
         			break;
         		}
+                finally {
+                    try {
+                        if (userInput != null) {
+                            userInput.close();
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
         	 
             }
              //Segment of CLI to handle voting
