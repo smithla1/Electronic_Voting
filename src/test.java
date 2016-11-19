@@ -170,6 +170,10 @@ public class test {
 		test4 = "President,Bernard Sanders,0,Ted Cruz,0,WRITE-IN";
 		System.out.println(test4);
 		System.out.println(test4.replaceFirst("Ted Cruz,\\d+","Zodiac Killer,5"));
+
+		String thisIsastring1 = "string1";
+		String thisIsastring2 = "string1";
+		System.out.println(thisIsastring1==thisIsastring2);
 	}
 	
 

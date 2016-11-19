@@ -30,7 +30,7 @@ public class fileManager {
     *                                   name, their date of birth, and their
     *                                   social security number
     */ 
-    protected void addRegisteredVoter( byte[] encryptedRegistrationID, String[] PID) {
+    protected void addRegisteredVoter( String registrationID, String[] PID) {
         try {
             registration_out_file = new FileWriter("regLog.csv", true);
             StringBuffer information = new StringBuffer();
@@ -38,7 +38,7 @@ public class fileManager {
                 information.append(PID[i]);
                 information.append(",");
             }
-            information.append(new String(encryptedRegistrationID));
+            information.append(registrationID);
             information.append("\n");
 
             registration_out_file.write(information.toString());
@@ -66,17 +66,15 @@ public class fileManager {
     *                                   the user is registered and false
     *                                   means they are not.
     */ 
-    protected boolean isRegistered( byte[] encryptedRegistrationID ) {
+    protected boolean isRegistered( String registrationID ) {
         try {
             registration_in_file = new FileReader("regLog.csv");
             BufferedReader br = new BufferedReader(registration_in_file);
 
             String line = br.readLine();
             while( line != null ) {
-                for (String temp : line.split(",")) {
-                    System.out.println(temp);
-                }
-                if ((new String(encryptedRegistrationID)).equals(line.split(",")[3])){
+                System.out.println("Test\n" + registrationID + "\n" +line.split(",")[3]);
+                if (registrationID.equals(line.split(",")[3])){
                     return true;
                 }
                 line = br.readLine();
@@ -110,12 +108,12 @@ public class fileManager {
     * @param encryptedRegistrationID    a byte array that contains the user's
     *                                   encrypted registration ID. 
     */ 
-    private void addVote( byte[] encryptedRegistrationID ) {
+    private void addVote( String registrationID ) {
 
         try {
             voter_out_file = new FileWriter("voterLogs.csv", true);
 
-            voter_out_file.write(new String(encryptedRegistrationID)+"\n");
+            voter_out_file.write(registrationID+"\n");
             voter_out_file.close();
             voter_out_file = null;
 
@@ -139,14 +137,14 @@ public class fileManager {
     *                                   user has voted and where false means
     *                                   the user has not voted.
     */ 
-    protected boolean hasVoted( byte[] encryptedRegistrationID ) {
+    protected boolean hasVoted( String registrationID ) {
         try {
             voter_in_file = new FileReader("voterLogs.csv");
             BufferedReader br = new BufferedReader(voter_in_file);
 
             String line = br.readLine();
             while( line != null ) {
-                if (encryptedRegistrationID.toString().equals(line.split(",")[3])){
+                if (registrationID.equals(line.split(",")[3])){
                     return true;
                 }
                 line = br.readLine();
@@ -211,10 +209,10 @@ public class fileManager {
     *       that every position will be present, even if the vote is abstained
     *       (see above for how to format an abstained vote).       
     */
-    protected void castVote(String[] selection, byte[] encryptedRegistrationID) {
+    protected void castVote(String[] selection, String registrationID) {
         // Add their registration ID to the file keeping track of who
         // all has voted.
-        addVote(encryptedRegistrationID);
+        addVote(registrationID);
 
         // Get the current state of the election
         String[] results = parseResultsFile();
@@ -385,15 +383,15 @@ public class fileManager {
 
         //Create some dummy data
         String[] myPID = {"Logan", "Werbenjagermanjensen", "Smith"};
-        byte[] testID = new byte[8];
+        String regId = "0123456789123456";
 
         //Register this dummy
-        myManager.addRegisteredVoter(testID, myPID);
+        myManager.addRegisteredVoter(regId, myPID);
 
         System.out.print("Logan is registered to vote: ");
 
         //Test finding an entry
-        System.out.println(myManager.isRegistered(testID));
+        System.out.println(myManager.isRegistered(regId));
 
         System.out.println("These are the candidates:");
         String[] theCandidates = myManager.getCandidates();
@@ -402,10 +400,10 @@ public class fileManager {
         }
 
         String[] myVote = {"President,Ted Cruz", "Vice President,Danny Boy", "Senator,#"};
-        myManager.castVote(myVote, testID);
+        myManager.castVote(myVote, regId);
 
         String[] myOtherVote = {"President,JESUS", "Vice President,#", "Senator,#"};
-        myManager.castVote(myOtherVote, testID);
+        myManager.castVote(myOtherVote, regId);
 
         System.out.println("\nAn administrator would like to see how the election is going. Here is the tally:");
         String[] results = myManager.getTalley();
