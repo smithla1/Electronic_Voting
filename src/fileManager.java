@@ -24,11 +24,11 @@ public class fileManager {
     * This method will add a user to the file containing all registered
     * voters.
     *
-    * @param encryptedRegistrationID    a byte array that contains the user's
-    *                                   encrypted registration ID.
-    * @param PID                        a string array containing a user's full
-    *                                   name, their date of birth, and their
-    *                                   social security number
+    * @param registrationID     a byte array that contains the user's
+    *                           registration ID.
+    * @param PID                a string array containing a user's full
+    *                           name, their date of birth, and their
+    *                           social security number
     */ 
     protected void addRegisteredVoter( String registrationID, String[] PID) {
         try {
@@ -52,19 +52,19 @@ public class fileManager {
 
 
    /**
-    * This method will reference the file containing the encrypted
+    * This method will reference the file containing the
     * registration ID's of registered voters and determine whether or not
-    * a given encrypted registration ID is in the file.
+    * a given registration ID is in the file.
     *
     * The purpose of the method is to determine whether or not a given
     * user is registered to vote or not.
     *
-    * @param encryptedRegistrationID    a byte array that contains the user's
-    *                                   encrypted registration ID.
+    * @param registrationID     a byte array that contains the user's
+    *                           registration ID.
     * 
-    * @return                           a boolean value where true means
-    *                                   the user is registered and false
-    *                                   means they are not.
+    * @return                   a boolean value where true means
+    *                           the user is registered and false
+    *                           means they are not.
     */ 
     protected boolean isRegistered( String registrationID ) {
         try {
@@ -101,12 +101,12 @@ public class fileManager {
 
 
    /**
-    * This method will add a user's encrypted registration ID to the
-    * file containing the encrypted registration IDs of everyone
+    * This method will add a user's registration ID to the
+    * file containing the registration IDs of everyone
     * who has cast a vote.
     *
-    * @param encryptedRegistrationID    a byte array that contains the user's
-    *                                   encrypted registration ID. 
+    * @param registrationID     a byte array that contains the user's
+    *                           registration ID. 
     */ 
     private void addVote( String registrationID ) {
 
@@ -125,17 +125,17 @@ public class fileManager {
 
    /**
     * This method will determine if a user has cast a vote by checking
-    * the file containing the encrypted registration IDs of everyone
-    * who has cast a vote. If they given encrypted registration ID is in
+    * the file containing the registration IDs of everyone
+    * who has cast a vote. If they given registration ID is in
     * the file, then the user has voted and if not, then the user has not
     * voted.
     *
-    * @param encryptedRegistrationID    a byte array that contains the user's
-    *                                   encrypted registration ID.
+    * @param registrationID     a string that contains the user's
+    *                           registration ID.
     *
-    * @return                           a boolean value where true means the
-    *                                   user has voted and where false means
-    *                                   the user has not voted.
+    * @return                   a boolean value where true means the
+    *                           user has voted and where false means
+    *                           the user has not voted.
     */ 
     protected boolean hasVoted( String registrationID ) {
         try {
@@ -179,8 +179,8 @@ public class fileManager {
 
 
    /**
-    * This method will add the voter's encrypted registration ID to the list
-    * of encrypted registration ID's. 
+    * This method will add the voter's registration ID to the list
+    * of registration ID's. 
     *
     * It will also cast the user's vote. It is important to note that the
     * user's vote WILL NOT be associated with their registration ID. The
@@ -198,10 +198,10 @@ public class fileManager {
     * as the candidate after the position. An abstained vote will be have the
     * candidate as a pound sign '#'.
     *
-    * @param selection                  a string array containing the user's
-    *                                   selected candidates
-    * @param encryptedRegistrationID    a byte array that contains the user's
-    *                                   encrypted registration ID.
+    * @param selection          a string array containing the user's
+    *                           selected candidates
+    * @param registrationID     a byte array that contains the user's
+    *                           registration ID.
     *
     * @see  IMPORTANT ASSUMPTION: We are assuming that the incoming selection
     *       will be in the same order as the positions are listed in the file
