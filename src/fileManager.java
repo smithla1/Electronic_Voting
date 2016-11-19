@@ -8,12 +8,12 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
 public class fileManager {
-    private FileWriter registration_out_file = null;
-    private FileReader registration_in_file = null;
-    private FileWriter voter_out_file = null;
-    private FileReader voter_in_file = null;
-    private FileWriter results_out_file = null;
-    private FileReader results_in_file = null;
+    private FileWriter registration_out_file;
+    private FileReader registration_in_file;
+    private FileWriter voter_out_file;
+    private FileReader voter_in_file;
+    private FileWriter results_out_file;
+    private FileReader results_in_file;
 
     public fileManager() {
         //Do nothing
@@ -78,6 +78,8 @@ public class fileManager {
                 }
                 line = br.readLine();
             }
+            br.close();
+            registration_in_file = null;
 
             return false;
 
@@ -235,15 +237,18 @@ public class fileManager {
                     for(int j=1;j<positionResults[i].length(); j=j+2) {
                         //if the last position is "WRITE-IN" and we have not found
                         // the user's candidate, then it's a write in we don't have
-                        if (j == positionResults[i].length()-1 && positionResults[i].equals("WRITE-IN")) {
+                        if (j == positionResults.length-1 && positionResults[j].equals("WRITE-IN")) {
                             StringBuffer newResult = new StringBuffer();
-                            newResult.append(selection[i]);
+                            newResult.append(results[i]);
                             newResult.append(",");
-                            newResult.append(choice[0]);
+                            newResult.append(choice[1]);
                             newResult.append(",");
                             newResult.append("1");
+                            results_out_file.write(newResult.toString());
+                            results_out_file.write("\n");
+                            break;
                         } else if (positionResults[j].equals("WRITE-IN")) {
-                            j++;
+                            j--;
                         } else if (positionResults[j].equals(choice[1])){
                             String replacee = choice[1] + "," + "\\d+";
                             String replacer = choice[1] + ","
@@ -394,5 +399,15 @@ public class fileManager {
 
         String[] myVote = {"President,Ted Cruz", "Vice President,Danny Boy", "Senator,#"};
         myManager.castVote(myVote, testID);
+
+        String[] myOtherVote = {"President,JESUS", "Vice President,#", "Senator,#"};
+        myManager.castVote(myOtherVote, testID);
+
+        System.out.println("\nAn administrator would like to see how the election is going. Here is the tally:");
+        String[] results = myManager.getTalley();
+
+        for (String temp : results) {
+            System.out.println(temp);
+        }
     }
 }
