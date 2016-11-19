@@ -59,7 +59,7 @@ public class registrationID {
     }
 
     
-    private byte[] createSecureRegistrationID( String registrationID )
+    protected byte[] createSecureRegistrationID( String registrationID )
             throws NoSuchAlgorithmException, InvalidKeySpecException {
 
         String password = "THISISTHEMASTERPASSWORD";

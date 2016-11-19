@@ -30,7 +30,7 @@ public class fileManager {
     *                                   name, their date of birth, and their
     *                                   social security number
     */ 
-    private void addRegisteredVoter( byte[] encryptedRegistrationID, String[] PID) {
+    protected void addRegisteredVoter( byte[] encryptedRegistrationID, String[] PID) {
         try {
             registration_out_file = new FileWriter("regLog.csv", true);
             StringBuffer information = new StringBuffer();
@@ -66,7 +66,7 @@ public class fileManager {
     *                                   the user is registered and false
     *                                   means they are not.
     */ 
-    private boolean isRegistered( byte[] encryptedRegistrationID ) {
+    protected boolean isRegistered( byte[] encryptedRegistrationID ) {
         try {
             registration_in_file = new FileReader("regLog.csv");
             BufferedReader br = new BufferedReader(registration_in_file);
@@ -133,7 +133,7 @@ public class fileManager {
     *                                   user has voted and where false means
     *                                   the user has not voted.
     */ 
-    private boolean hasVoted( byte[] encryptedRegistrationID ) {
+    protected boolean hasVoted( byte[] encryptedRegistrationID ) {
         try {
             voter_in_file = new FileReader("voterLogs.csv");
             BufferedReader br = new BufferedReader(voter_in_file);
@@ -205,7 +205,7 @@ public class fileManager {
     *       that every position will be present, even if the vote is abstained
     *       (see above for how to format an abstained vote).       
     */
-    private void castVote(String[] selection, byte[] encryptedRegistrationID) {
+    protected void castVote(String[] selection, byte[] encryptedRegistrationID) {
         // Add their registration ID to the file keeping track of who
         // all has voted.
         addVote(encryptedRegistrationID);
@@ -285,7 +285,7 @@ public class fileManager {
     * @return   A string array containing the official candidates for each
     *           position.
     */
-    private String[] getCandidates() {
+    protected String[] getCandidates() {
         String[] results = parseResultsFile();
         String[] candidates = new String[results.length];
 
@@ -316,7 +316,7 @@ public class fileManager {
     * 
     * @return   A string array containing the current standings of the election
     */ 
-    private String[] getTalley() {
+    protected String[] getTalley() {
         return parseResultsFile();
     }
 
