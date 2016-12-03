@@ -45,7 +45,7 @@ With the mysql jar file:
   javac -cp .:/src/mysql-connector-java-5.1.40-bin.jar -d bin -sourcepath src src/*.java
 
 And to run the code:
-  java -cp .:/bin/mysql-connector-java-5.1.40-bin.jar:./bin TempCLI
+  java -cp .:mysql-connector-java-5.1.40-bin.jar:./bin TempCLI
 
 The above statements are done from the top level directory of the project, with
 the associated csv files there as well.
