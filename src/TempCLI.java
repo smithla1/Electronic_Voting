@@ -21,6 +21,7 @@ public class TempCLI {
 
     private void displayCandidates( String[] selection) {
         for( String choice : selection ) {
+            System.out.println(choice);
             String[] parts = choice.split(",");
 
             if (parts[1].equals("#")) {
@@ -212,7 +213,6 @@ public class TempCLI {
                     		
                             String[] finalSelection = new String[selection.size()];
                             finalSelection = selection.toArray(finalSelection);
-                    		logic.castVote(finalSelection, regID);
 
                             System.out.println("You have finished selecting your candidates!"
                                                 + " These are the candidates that you have selected!\n");
@@ -228,11 +228,12 @@ public class TempCLI {
                             }
 
                             if (temp.equalsIgnoreCase("Y")) {
-                                break;
+                                continue;
+                            } else {
+                                logic.castVote(finalSelection, regID);
+                                System.out.println("\nYour selections have been recorded!\nThank you for voting!");
+                                return;
                             }
-
-                            System.out.println("\nYour selections have been recorded!\nThank you for voting!");
-                            return;
                         }
             	 } else {
                     System.out.println("I'm sorry, but you are not registered. Please register before trying to vote.");
