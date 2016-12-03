@@ -25,3 +25,8 @@ Additional notes about the registration ID:
     details: https://en.wikipedia.org/wiki/Social_Security_number#Valid_SSNs) we have decided to use
     unique registration ID's that end in 0000 to signify administrators. This will allow us to conceal the
     administrator login option from normal end users.
+
+
+This command can be used to compile the source code:
+  javac -d bin -sourcepath src src/*.java
+Make sure to keep the necessary files in the bin directory
