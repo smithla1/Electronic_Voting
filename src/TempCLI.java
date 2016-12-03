@@ -21,7 +21,6 @@ public class TempCLI {
 
     private void displayCandidates( String[] selection) {
         for( String choice : selection ) {
-            System.out.println(choice);
             String[] parts = choice.split(",");
 
             if (parts[1].equals("#")) {
