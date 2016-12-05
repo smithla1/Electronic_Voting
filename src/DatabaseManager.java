@@ -82,7 +82,7 @@ public class DatabaseManager {
 
 
     /**
-     * Run a SQL command which does not return a recordset:
+     * Run a SQL command which does not return a RecordSet:
      * CREATE/INSERT/UPDATE/DELETE/DROP/etc.
      * 
      * @throws SQLException If something goes wrong
@@ -100,7 +100,62 @@ public class DatabaseManager {
         }
     }
 
+    /**
+     * This method will test to see if a user is registered. If the user
+     * is registered, this method will return true, otherwise false.
+     *
+     * @param PID   a string array containing a user's full name, their date
+     *              of birth, and their social security number.
+     * @return      a boolean value where true means the user is in the
+     *              registration database, and false means they are not.
+     */
+    protected boolean isRegistered(String[] PID) {
+        String name = PID[0].toUpperCase();
+        String dobPieces[] = PID[1].split("/");
+        String newDOBFormat = dobPieces[2] + "-" +
+                              dobPieces[0] + "-" +
+                              dobPieces[1];
+        int ssnHash = PID[2].hashCode();
 
+        String query = "SELECT * FROM RegistrationLog WHERE " +
+                       "NAME='" + name + "' AND DOB='" + newDOBFormat + 
+                       "' AND SSN=" + ssnHash;
+
+        System.out.println(query);
+        Statement stmt = null;
+        try {
+            stmt = this.conn.createStatement();
+            ResultSet rs = stmt.executeQuery(query);  
+
+            if (!rs.isBeforeFirst()) {
+                return false;
+            } else {
+                return true;
+            }
+
+        } catch (SQLException e) {
+            System.out.println("ERROR QUERYING THE DATABASE");
+            return false;
+        }
+    }
+
+    /**
+     * This method will take an ArrayList of candidates and output a string
+     * array that is formated as expected by System Logic, which is a string
+     * array in which each index in the array is a position, with the
+     * candidates and their votes appended to the position and separated by
+     * commas.
+     *
+     * This method will take an ArrayList of candidates formated as:
+     *   index[0] - President,Jon Snow
+     *   index[1] - Vice President,Mike Pence
+     *   ...
+     *
+     * The ArrayList may also contain the votes as well, formated as:
+     *   index[0] - President,Jon Snow,5
+     *   index[1] - Vice President,Mike Pence,2
+     *   ...
+     */
     private String[] joinCandidateList(ArrayList<String> candidates) {
         ArrayList<String> positions = new ArrayList<String>();
         for(int i=0; i<candidates.size(); i++) {
@@ -123,15 +178,32 @@ public class DatabaseManager {
     }
 
 
-    public String[] getCandidates() {
+    private String[] parseCandidates(Boolean onlyOfficialCandidates,
+                                    Boolean getVotes) {
+
+        //This will change the SQL Query statement
+        String selectClause;
+        String whereClause;
+
+        if (getVotes) {
+            selectClause = "SELECT POSITION, NAME, VOTES ";
+        } else {
+            selectClause = "SELECT POSITION, NAME ";
+        } 
+        if (onlyOfficialCandidates) {
+            whereClause = " WHERE IS_OFFICIAL ";
+        } else {
+            whereClause = " ";
+        }
+
         Statement stmt = null;
         try {
-            String querey = "SELECT POSITION, NAME " +
+            String query = "SELECT POSITION, NAME " +
                             "FROM " + this.candidatesTable +
-                            " WHERE IS_OFFICIAL " +
+                            whereClause +
                             "ORDER BY ORDERING";
             stmt = this.conn.createStatement();
-            ResultSet rs = stmt.executeQuery(querey);            
+            ResultSet rs = stmt.executeQuery(query);            
             if(!rs.isBeforeFirst()) {
                 System.out.println("There are no candidates");
                 return new String[0];
@@ -154,6 +226,16 @@ public class DatabaseManager {
         }
 
     }
+
+
+    protected String[] getCandidates() {
+        return parseCandidates(true, false);
+    }
+
+    protected String[] getTalley() {
+        return parseCandidates(false, true);
+    }
+
 
 
     /**
@@ -179,10 +261,10 @@ public class DatabaseManager {
             System.out.println("Now, let's check the results.");
 
             Statement stmt = null;
-            String querey = "SELECT * FROM Candidates";
+            String query = "SELECT * FROM Candidates";
 
             stmt = this.conn.createStatement();
-            ResultSet rs = stmt.executeQuery(querey);
+            ResultSet rs = stmt.executeQuery(query);
 
             while (rs.next()) {
                 String position = rs.getString("POSITION");
@@ -194,12 +276,11 @@ public class DatabaseManager {
                                     numVotes);
             }
 
-            System.out.println("\nNow let's see the candidates for the position of GOD");
+            System.out.println("\nNow let's see the candidates for the position of President");
 
-            querey = "SELECT * FROM Candidates WHERE Position='President'";
+            query = "SELECT * FROM Candidates WHERE Position='President'";
             stmt = this.conn.createStatement();
-            rs = stmt.executeQuery(querey);
-            System.out.println(rs);
+            rs = stmt.executeQuery(query);
             while (rs.next()) {
                 String position = rs.getString("POSITION");
                 String candidate = rs.getString("NAME");
@@ -222,6 +303,15 @@ public class DatabaseManager {
             System.out.println(eachResult);
         }
 
+        System.out.println("Let's look at the candidates with getTalley()");
+        String[] theTally = getTalley();
+        for ( String each : theTally) {
+            System.out.println(each);
+        }
+
+        System.out.println("Let's see if I am registered");
+        String[] PID = {"Logan Allen Smith","06/20/1995","123456789"};
+        System.out.println(isRegistered(PID));
     }
 
 

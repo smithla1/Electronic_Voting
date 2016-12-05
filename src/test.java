@@ -129,21 +129,6 @@ public class test {
 	    System.out.println(sec.generateSalt());
 		
 
-
-
-		try 
-		{
-		    String filename= "MyFile.txt";
-    		FileWriter fw = new FileWriter(filename,true); //the true will append the new data
-    		fw.write("add a line\n");//appends the string to the file
-    		fw.close();
-		}
-
-		catch(IOException ioe)
-		{
- 		   System.err.println("IOException: " + ioe.getMessage());
-		}
-
 		String[] PID = {"Logan", "Dave", "Bob"};
 		for(int i = 0; i<PID.length; i++) {
 			System.out.println(PID[i]);
@@ -191,6 +176,16 @@ public class test {
 		System.out.println(testArray[0]);
 		testArray[0] = "I don't like this test";
 		System.out.println(testArray[0]);
+
+		System.out.println("Let's hashCode more things.");
+		System.out.println("Here is a code: 0123456789120000");
+		String adminCode = "0123456789120000";
+		System.out.println(adminCode.hashCode());
+
+		String fakeSSN = "123456789";
+		System.out.println(fakeSSN.hashCode());
+
+		System.out.println("Test " + 5);
 	}
 	
 
