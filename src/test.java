@@ -175,6 +175,22 @@ public class test {
 		String thisIsastring2 = "3702237466956700";
 		System.out.println(thisIsastring1==thisIsastring2);
 		System.out.println(thisIsastring1.equals(thisIsastring2));
+
+
+		System.out.println("Testing the hashCode function on 'John Doe Smith'");
+		String testHash = "John Doe Smith";
+		System.out.println(testHash.hashCode());
+
+		ArrayList<String> testList = new ArrayList<String>();
+		testList.add("This is a test");
+		System.out.println(testList.contains("This"));
+		System.out.println(testList.contains("This is a test"));
+
+		String[] testArray = new String[1];
+		testArray[0] = "This is a test";
+		System.out.println(testArray[0]);
+		testArray[0] = "I don't like this test";
+		System.out.println(testArray[0]);
 	}
 	
 
