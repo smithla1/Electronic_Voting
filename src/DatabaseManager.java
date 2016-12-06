@@ -40,10 +40,10 @@ public class DatabaseManager {
     private final String candidatesTable = "Candidates";
 
     // The name of the table containing the registered users
-    //private final String registrationLog = "RegistrationLog";
+    private final String registrationLog = "RegistrationLog";
 
     // The name of the table containing the voting log
-    //private final String voteLog = "VoteLog";
+    private final String votingLog = "VotingLog";
 
     // The connection to the database used by the various methods of this class
     private Connection conn = null;
@@ -59,6 +59,7 @@ public class DatabaseManager {
             return;
         }
     }
+
 
     /**
      * Get a new database connection
@@ -100,6 +101,88 @@ public class DatabaseManager {
         }
     }
 
+
+    /**
+     * Run a SQL command which returns a ResultSet
+     *
+     * @throws SQLException if something goes wrong
+     */
+    public ResultSet executeQuery(String query) throws SQLException {
+        Statement stmt = null;
+        stmt = this.conn.createStatement();
+        return stmt.executeQuery(query);       
+    }
+
+
+    /**
+     * This method will add a user to the database table containing
+     * information about registered users.
+     *
+     * @param registrationID    This is a unique value assigned to each
+     *                          voter.
+     * @param PID                a string array containing a user's full
+     *                           name, their date of birth, and their
+     *                           social security number
+     */
+    protected void addRegisteredVoter( String registrationID, String[] PID) {
+        String name = PID[0].toUpperCase();
+        String dobPieces[] = PID[1].split("/");
+        String newDOBFormat = dobPieces[2] + "-" +
+                              dobPieces[0] + "-" +
+                              dobPieces[1];
+        int ssnHash = PID[2].hashCode();
+
+        String query = "SELECT * FROM RegistrationLog WHERE " +
+                       "NAME='" + name + "' AND DOB='" + newDOBFormat + 
+                       "' AND SSN=" + ssnHash;
+        int regIDHash = registrationID.hashCode();
+
+        try {
+            if (!isRegistered(PID)) {
+                String updateStmt = "INSERT INTO " + this.registrationLog + 
+                                    " (NAME, DOB, SSN, REG_ID)" +
+                                    " VALUES ('" + name + "', '" + newDOBFormat +
+                                    "', " + ssnHash + ", " + regIDHash + ")";
+                executeUpdate(updateStmt);
+            }
+        } catch (SQLException e) {
+            System.out.println("DATABASE ERROR");
+            e.printStackTrace();
+        }
+    }
+
+
+    /**
+     * This method will check is a given registration ID is in the
+     * database table containing registration logs of each voter.
+     * If the given registration ID is present that means the voter
+     * is registered to vote.
+     *
+     * @param registrationID    This is a unique value assigned to each
+     *                          voter.
+     * @return                  A boolean value, with true indicating the
+     *                          given user's registrationID is present in
+     *                          the database
+     */
+    protected boolean isRegistered(String registrationID) {
+        try {
+            String query = "SELECT * FROM " + registrationLog +
+                           " WHERE REG_ID=" + registrationID.hashCode();
+
+            ResultSet rs = executeQuery(query);
+            if (!rs.isBeforeFirst()) {
+                return false;
+            } else {
+                return true;
+            }
+        } catch (SQLException e) {
+            System.out.println("ERROR DETERMINING REGISTRATION STATUS");
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+
     /**
      * This method will test to see if a user is registered. If the user
      * is registered, this method will return true, otherwise false.
@@ -117,27 +200,123 @@ public class DatabaseManager {
                               dobPieces[1];
         int ssnHash = PID[2].hashCode();
 
-        String query = "SELECT * FROM RegistrationLog WHERE " +
+        String query = "SELECT * FROM " + registrationLog + " WHERE " +
                        "NAME='" + name + "' AND DOB='" + newDOBFormat + 
                        "' AND SSN=" + ssnHash;
-
-        System.out.println(query);
-        Statement stmt = null;
         try {
-            stmt = this.conn.createStatement();
-            ResultSet rs = stmt.executeQuery(query);  
+            ResultSet rs = executeQuery(query);  
 
             if (!rs.isBeforeFirst()) {
                 return false;
             } else {
                 return true;
             }
-
         } catch (SQLException e) {
-            System.out.println("ERROR QUERYING THE DATABASE");
+            System.out.println("ERROR DETERMINING REGISTRATION STATUS");
+            e.printStackTrace();
             return false;
         }
     }
+
+
+    /**
+     * This method will check if a given registration ID is present in
+     * the database table containing logs of every registration ID used
+     * to cast a vote.
+     * 
+     * @param registrationID    This is a unique value assigned to each
+     *                          voter.
+     */
+    private void addVote( String registrationID ) {
+        try {
+            if(!hasVoted(registrationID)) {
+                String insertStmt = "INSERT INTO " + votingLog +
+                                    " (REG_ID) VALUES (" + 
+                                    registrationID.hashCode() + ")";
+                executeUpdate(insertStmt);
+            }
+        } catch (SQLException e) {
+            System.out.println("ERROR ADDING VOTE");
+            e.printStackTrace();
+        }
+    }
+
+
+    /**
+     * This method will check the Voting Logs for the given registration
+     * ID. If the ID is present, this indicates that the user with the
+     * given registration ID has already voted. If the registration ID is
+     * not present in the database, this indicates that the user has not
+     * voted.
+     *
+     * @param registrationID    This is a unique value assigned to each
+     *                          voter.
+     * @return                  A boolean value, where true indicates that
+     *                          the user with the given registration ID
+     *                          has voted, and false indicates that the user
+     *                          with the given registration ID has not voted.
+     */
+    protected boolean hasVoted( String registrationID ) {
+        try {
+            String query = "SELECT * FROM " + votingLog +
+                           " WHERE REG_ID=" + registrationID.hashCode();
+            ResultSet rs = executeQuery(query);
+
+            if (!rs.isBeforeFirst()) {
+                return false;
+            } else {
+                return true;
+            }
+        } catch (SQLException e) {
+            System.out.println("ERROR CHECKING DATABASE");
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+
+    protected void castVote( String[] selection, String registrationID) {
+        addVote(registrationID);
+
+        try {
+            for (String position : selection) {
+                String[] pieces = position.split(",");
+
+                // If the user abstained, no more work is needed
+                if (pieces[1].equals("#")) {
+                    continue; }
+                
+                String query = "SELECT * FROM " + candidatesTable +
+                               " WHERE POSITION='" + pieces[0] +
+                               "' AND NAME='" + pieces[1] + "'";
+                ResultSet rs = executeQuery(query);
+                if(!rs.isBeforeFirst()) {
+                    //need to get ordering of the position
+                    String posQuery = "SELECT POSITION FROM " + candidatesTable +
+                                   " WHERE POSITION='" + pieces[0] + "'";
+                    ResultSet rs2 = executeQuery(posQuery);
+                    rs2.first();
+                    int ordering = rs2.getInt("ORDERING");
+                    // add the new candidate with one vote
+                    String insertStmt = "INSERT INTO " + candidatesTable +
+                                        " (POSITION, NAME, VOTES, IS_OFFICIAL, ORDERING) " +
+                                        "VALUES ('" + pieces[0] + "','" +
+                                        pieces[1] + "',1,0," + position + ")";
+                    executeUpdate(insertStmt);
+                } else {
+                    String updateStmt = "UPDATE " + candidatesTable + 
+                                        " SET VOTES = VOTES + 1 " +
+                                        "WHERE POSITION='" + pieces[0] + "' AND NAME='" +
+                                        pieces[1] + "'";
+                    executeUpdate(updateStmt);
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("DATABASE ERROR WHEN CASTING VOTE");
+            e.printStackTrace();
+        }
+    }
+
 
     /**
      * This method will take an ArrayList of candidates and output a string
@@ -178,6 +357,14 @@ public class DatabaseManager {
     }
 
 
+    /**
+     * This method acts as a helper method to several other methods
+     * in this class. It will access the candidate database table
+     * and return either the official candidates or all candidates,
+     * along with either returning the votes or not the votes.
+     * The decision to gather certain data is determined by the boolean
+     * values passed to it. 
+     */
     private String[] parseCandidates(Boolean onlyOfficialCandidates,
                                     Boolean getVotes) {
 
@@ -196,14 +383,12 @@ public class DatabaseManager {
             whereClause = " ";
         }
 
-        Statement stmt = null;
         try {
             String query = "SELECT POSITION, NAME " +
                             "FROM " + this.candidatesTable +
                             whereClause +
                             "ORDER BY ORDERING";
-            stmt = this.conn.createStatement();
-            ResultSet rs = stmt.executeQuery(query);            
+            ResultSet rs = executeQuery(query);        
             if(!rs.isBeforeFirst()) {
                 System.out.println("There are no candidates");
                 return new String[0];
@@ -312,6 +497,28 @@ public class DatabaseManager {
         System.out.println("Let's see if I am registered");
         String[] PID = {"Logan Allen Smith","06/20/1995","123456789"};
         System.out.println(isRegistered(PID));
+
+
+        System.out.println("Let's add a voter and see if they show up.");
+        System.out.println("Daniel Day Lewis, 11/11/1911, 987654321, 0123456789012345");
+        String[] PID2 = {"Daniel Day Lewis", "11/11/1911", "987654321"};
+        String regId = "0123456789012345";
+        //addRegisteredVoter(regId, PID2);
+        System.out.println("Daniel is registered? : " + isRegistered(PID2));
+
+        System.out.println("Let's see if Daniel's REG_ID is in the database");
+        System.out.println("0123456789012345 in database? " + isRegistered(regId));
+
+        System.out.println("Let's add a vote and see if it shows in the database");
+        addVote(regId);
+        System.out.println("Has Daniel voted? : " + hasVoted(regId));
+
+        System.out.println("Let's have Daniel vote for Ted Cruz and Sarah Palin." +
+            "\nPlease not that this will only work here, as I am ignoring checks on " +
+            "people who have already voted.");
+        String[] dannielVote = {"President,Ted Cruz", "Vice President,Sarah Palin", "Senator,#", "Governor,#"};
+        castVote(dannielVote, regId);
+
     }
 
 

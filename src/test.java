@@ -186,6 +186,8 @@ public class test {
 		System.out.println(fakeSSN.hashCode());
 
 		System.out.println("Test " + 5);
+
+		System.out.println("The hash of 987654321 is: " + "987654321".hashCode());
 	}
 	
 
