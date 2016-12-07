@@ -18,33 +18,45 @@ public class GUI extends JFrame{
     private final JPanel cards = new JPanel(cl);
     private final Border border = BorderFactory.createEmptyBorder(60, 60, 60, 60);
     private JTextField nameField=null,dobField=null,ssnField=null;
-    private JButton mvToRegisterBtn,confirmRegisterBtn,mvToVoteBtn,cancelBtn,cancelBtn1;
-    private JPanel panel1, panel2, panel3, panel4; 
+    private JButton mvToRegisterBtn,confirmRegisterBtn,mvToVoteBtn,cancelBtn,cancelBtn1,cancelBtn2;
+    private JPanel panel1, panel2, panel3, panel4, panel5;
+    private JFrame frame = new JFrame();
+    private SystemLogic logic = new SystemLogic();
+    private String tempRegistrationID;
     
 
     public GUI() {
 
         
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(5,5,5,5);
+        gbc.insets = new Insets(7,7,7,7);
+        setUIFont (new javax.swing.plaf.FontUIResource("Helvetica",Font.PLAIN,24));
+        
+        
+        
         //setContentPane(contentPane);
 
         panel1 = new JPanel(new GridBagLayout());
-        gbc.gridx = 1;
+        gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.gridwidth = 2;
+        gbc.fill = GridBagConstraints.BOTH;
         panel1.setBorder(border);
         panel1.setBackground(Color.CYAN);
-        panel1.add(new JLabel("Welcome"), gbc);
+        JLabel welcome = new JLabel("Welcome to out E-Voting System!");
+        welcome.setHorizontalAlignment(AbstractButton.CENTER);
+        panel1.add(welcome, gbc);
+        
         cards.add(panel1, "E-Voting");
+        gbc.gridwidth = 1;
 
         
         
         panel2 = new JPanel(new GridBagLayout());
         JLabel label = new JLabel("Registration");
-        gbc.gridx = 0;
+        gbc.gridx = 1;
         gbc.gridy = 0;
-        panel2.add(label);
+        panel2.add(label, gbc);
         panel2.setBorder(border);
         panel2.setBackground(Color.CYAN);
         
@@ -59,6 +71,7 @@ public class GUI extends JFrame{
             JLabel tempLabel = new JLabel(labels[i-1]);
             gbc.gridx = 0;
             gbc.gridy = i;
+            tempLabel.setHorizontalAlignment(AbstractButton.CENTER);
             panel2.add(tempLabel, gbc);
             
             switch (i-1){
@@ -102,20 +115,81 @@ public class GUI extends JFrame{
         cards.add(panel2, "Registration");
 
         panel3 = new JPanel(new GridBagLayout());
-        gbc.gridx = 0;
+        gbc.gridx = 1;
         gbc.gridy = 0;
         panel3.setBorder(border);
         panel3.setBackground(Color.CYAN);
         panel3.add(new JLabel("Voting"), gbc);
+        
+        //Code to handle registration ID input
+        JTextField registrationID = new JTextField(20);
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        panel3.add(registrationID, gbc);
+        JLabel tempLabel = new JLabel("Registration ID:");
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        panel3.add(tempLabel, gbc);
         cards.add(panel3, "Voting");
         
         panel4 = new JPanel(new GridBagLayout());
+        panel4.setBorder(border);
+        panel4.setBackground(Color.CYAN);
+        String[] positionStrings = logic.getCandidates();
+        int currentPositionY=0, currentCandidatePositionY=1, j=1;
+        ButtonGroup[] buttons = new ButtonGroup[positionStrings.length];
+        for(int i=0; i<positionStrings.length; i++){
+        	String[] pieces = positionStrings[i].split(",");
+        	gbc.gridx = 0;
+        	gbc.gridy = currentPositionY;
+        	currentPositionY+=3;
+            JLabel tempLabel1 = new JLabel(pieces[0]);
+            tempLabel1.setPreferredSize(new Dimension(250, 30));
+            ButtonGroup tempButtonGroup = new ButtonGroup();
+            panel4.add(tempLabel1, gbc);
+            
+            for(j=1; j<pieces.length; j++){
+            	gbc.gridx = j-1;
+                gbc.gridy = currentCandidatePositionY;
+                JLabel tempLabel2 = new JLabel(pieces[j]);
+                tempLabel2.setPreferredSize(new Dimension(250, 30));
+                tempLabel2.setHorizontalAlignment(AbstractButton.CENTER);
+                panel4.add(tempLabel2, gbc);
+                JRadioButton tempRadioButton = new JRadioButton();
+                tempRadioButton.setPreferredSize(new Dimension(30, 30));
+                tempRadioButton.setHorizontalAlignment(AbstractButton.CENTER);
+                tempRadioButton.setBackground(Color.CYAN);
+                gbc.gridy = currentCandidatePositionY+1;
+                tempButtonGroup.add(tempRadioButton);
+                panel4.add(tempRadioButton, gbc);
+            	
+            }
+            JLabel tempLabel2 = new JLabel("Abstain");
+            tempLabel2.setPreferredSize(new Dimension(250, 30));
+            gbc.gridx = j-1;
+            gbc.gridy = currentCandidatePositionY;
+            tempLabel2.setHorizontalAlignment(AbstractButton.CENTER);
+            panel4.add(tempLabel2, gbc);
+            JRadioButton tempRadioButton = new JRadioButton();
+            tempRadioButton.setPreferredSize(new Dimension(30, 30));
+            tempRadioButton.setHorizontalAlignment(AbstractButton.CENTER);
+            tempRadioButton.setBackground(Color.CYAN);
+            gbc.gridy = currentCandidatePositionY+1;
+            tempButtonGroup.add(tempRadioButton);
+            buttons[i] = tempButtonGroup;
+            panel4.add(tempRadioButton, gbc);
+            currentCandidatePositionY+=3;
+            
+        }
+        cards.add(panel4, "Voting1");
+        
+        panel5 = new JPanel(new GridBagLayout());
         gbc.gridx = 0;
         gbc.gridy = 0;
-        panel3.setBorder(border);
-        panel3.setBackground(Color.CYAN);
-        panel3.add(new JLabel("Voting"), gbc);
-        cards.add(panel4, "Voting1");
+        panel5.setBorder(border);
+        panel5.setBackground(Color.CYAN);
+        panel5.add(new JLabel("Admin Panel"), gbc);
+        cards.add(panel5, "Admin Panel");
 
         mvToRegisterBtn = new JButton("Register");
         gbc.gridx = 0;
@@ -136,7 +210,7 @@ public class GUI extends JFrame{
             public void actionPerformed(ActionEvent e) {
             	//Takes in inputs 
             	String name, dob, ssn,nameUnsafe, dobUnsafe, ssnUnsafe;
-            	JFrame frame = new JFrame();
+            	
             	nameUnsafe = nameField.getText();
             	dobUnsafe = dobField.getText();
             	ssnUnsafe = ssnField.getText();
@@ -151,7 +225,7 @@ public class GUI extends JFrame{
             			if(dateStrip(dob).length() == 10){
             				//check to make sure the input SSN is the correct length
             				if(dateStrip(ssn).length() == 9){
-            					SystemLogic logic = new SystemLogic();
+            					
                     			
                     			String [] PID = {name, dob, ssn};
                         		try {
@@ -160,7 +234,7 @@ public class GUI extends JFrame{
                         				logic.registerUser(PID, currentUserID.getRegistrationID());
                         				
                         				//Code to handle copying registrationID to system clipboard (Only after successful registration)
-                        				String tempRegistrationID = currentUserID.getRegistrationID();
+                        				tempRegistrationID = currentUserID.getRegistrationID();
                         				StringSelection stringSelection = new StringSelection(tempRegistrationID);
                         				Clipboard clpbrd = Toolkit.getDefaultToolkit().getSystemClipboard();
                         				clpbrd.setContents(stringSelection, null);
@@ -189,18 +263,91 @@ public class GUI extends JFrame{
             		}
             		else{JOptionPane.showMessageDialog(frame, "Please override the default vaules.");}
             	}
-            	else{JOptionPane.showMessageDialog(frame, "please do not leave any fields blank");}
+            	else{JOptionPane.showMessageDialog(frame, "Please do not leave any fields blank");}
             }});
         
         
         mvToVoteBtn = new JButton("Start Voting");
-        gbc.gridx = 2;
+        gbc.gridx = 1;
         gbc.gridy = 1;
         panel1.add(mvToVoteBtn, gbc);
         mvToVoteBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 cl.show(cards, "Voting");
             }});
+        
+        JButton confirmRegistrationIDBtn = new JButton("Confirm");
+        gbc.gridx = 1;
+        gbc.gridy = 2;
+        panel3.add(confirmRegistrationIDBtn, gbc);
+        confirmRegistrationIDBtn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	String inputRegID = dateStrip(registrationID.getText());
+            	if(!(inputRegID.equals(""))){
+            		if(inputRegID.length() == 6){
+            			if(inputRegID.equals("111111")){
+            				//User is an admin
+            				cl.show(cards, "Admin Panel");
+            			}
+            		}
+            		else if(inputRegID.length() == 16){
+            			try {
+							if(logic.userIsRegistered(inputRegID)){
+								if(!(logic.userHasVoted(inputRegID))){
+									//registrationID.setText("");
+									cl.show(cards, "Voting1");
+								}
+								else{JOptionPane.showMessageDialog(frame, "You have already voted!");}
+							}
+							else{
+								JOptionPane.showMessageDialog(frame, "Registration ID is incorrect!");
+							}
+						} catch (Exception e1) {
+							JOptionPane.showMessageDialog(frame, "There was an error checking if you are registered");
+						}
+            		}
+            		else{JOptionPane.showMessageDialog(frame, "Please input your 16 digit registration ID in the correct format");}
+            	}
+            	else{JOptionPane.showMessageDialog(frame, "Please do not leave the registration ID blank");}
+                
+            }});
+        
+        JButton confirmVoteBtn = new JButton("Confirm");
+        gbc.gridx = j-1;
+        gbc.gridy = currentCandidatePositionY+1;
+        panel4.add(confirmVoteBtn, gbc);
+        confirmVoteBtn.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		String[] pieces;
+        		String[] myVote = new String[positionStrings.length];
+        		for(int i=0; i<positionStrings.length; i++){
+        			pieces = positionStrings[i].split(",");
+        			for(int j=0; j<buttons.length; j++){
+        				//System.out.println(buttons[j].getSelection());
+            			if(buttons[j].getSelection() == null){
+            				myVote[i]=pieces[0] + "," + "#";
+            			}
+            			else if(buttons[j].getSelection() != null){
+            				myVote[i]=pieces[0] + "," + pieces[j];
+            			}
+            		}
+        			
+        		}
+        		//for(int k=0; k<myVote.length; k++)
+        			//System.out.println(myVote[k]);
+        		
+        		//clears selection
+        		logic.castVote(myVote, registrationID.getText());
+        		JOptionPane.showMessageDialog(frame, "Thank you for voting!");
+        		for(int k=0; k<buttons.length; k++){
+        			buttons[k].clearSelection();
+        		}
+        		registrationID.setText("");
+        		cl.show(cards, "E-Voting");
+        	}
+        });
+        
+        
         cancelBtn = new JButton("Cancel");
         gbc.gridx = 0;
         gbc.gridy = 4;
@@ -212,19 +359,33 @@ public class GUI extends JFrame{
                 cl.show(cards, "E-Voting");
             }
         });
-        
+        panel2.add(cancelBtn, gbc);
         
         
         cancelBtn1 = new JButton("Cancel");
-        panel2.add(cancelBtn, gbc);
         gbc.gridx = 0;
         gbc.gridy = 2;
         cancelBtn1.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+            	registrationID.setText("");
                 cl.show(cards, "E-Voting");
             }
         });
         panel3.add(cancelBtn1, gbc);
+        
+        cancelBtn2 = new JButton("Cancel");
+        gbc.gridx = 0;
+        gbc.gridy = currentCandidatePositionY+1;
+        cancelBtn2.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	for(int i=0; i<buttons.length; i++){
+            		buttons[i].clearSelection();
+            	}
+            	registrationID.setText("");
+                cl.show(cards, "E-Voting");
+            }
+        });
+        panel4.add(cancelBtn2, gbc);
         
 
         add(cards);
@@ -239,6 +400,16 @@ public class GUI extends JFrame{
     	return stringToStip.replaceAll("[^0-9/]", "");
     }
 
+    public static void setUIFont (javax.swing.plaf.FontUIResource f){
+        java.util.Enumeration keys = UIManager.getDefaults().keys();
+        while (keys.hasMoreElements()) {
+          Object key = keys.nextElement();
+          Object value = UIManager.get (key);
+          if (value != null && value instanceof javax.swing.plaf.FontUIResource)
+            UIManager.put (key, f);
+          }
+        } 
+    
 	public static void main(String[] args) {
 		//Thread Safety
         EventQueue.invokeLater(new Runnable() {
