@@ -43,7 +43,7 @@ public class GUI extends JFrame{
         gbc.fill = GridBagConstraints.BOTH;
         panel1.setBorder(border);
         panel1.setBackground(Color.CYAN);
-        JLabel welcome = new JLabel("Welcome to out E-Voting System!");
+        JLabel welcome = new JLabel("Welcome to our E-Voting System!");
         welcome.setHorizontalAlignment(AbstractButton.CENTER);
         panel1.add(welcome, gbc);
         
@@ -142,7 +142,7 @@ public class GUI extends JFrame{
         	String[] pieces = positionStrings[i].split(",");
         	gbc.gridx = 0;
         	gbc.gridy = currentPositionY;
-        	currentPositionY+=3;
+        	currentPositionY+=2;
             JLabel tempLabel1 = new JLabel(pieces[0]);
             tempLabel1.setPreferredSize(new Dimension(250, 30));
             ButtonGroup tempButtonGroup = new ButtonGroup();
@@ -152,33 +152,33 @@ public class GUI extends JFrame{
             	gbc.gridx = j-1;
                 gbc.gridy = currentCandidatePositionY;
                 JLabel tempLabel2 = new JLabel(pieces[j]);
-                tempLabel2.setPreferredSize(new Dimension(250, 30));
-                tempLabel2.setHorizontalAlignment(AbstractButton.CENTER);
-                panel4.add(tempLabel2, gbc);
                 JRadioButton tempRadioButton = new JRadioButton();
-                tempRadioButton.setPreferredSize(new Dimension(30, 30));
+                tempRadioButton.setPreferredSize(new Dimension(275, 30));
                 tempRadioButton.setHorizontalAlignment(AbstractButton.CENTER);
                 tempRadioButton.setBackground(Color.CYAN);
-                gbc.gridy = currentCandidatePositionY+1;
+                tempRadioButton.setText(tempLabel2.getText());
                 tempButtonGroup.add(tempRadioButton);
                 panel4.add(tempRadioButton, gbc);
             	
             }
+            
             JLabel tempLabel2 = new JLabel("Abstain");
-            tempLabel2.setPreferredSize(new Dimension(250, 30));
-            gbc.gridx = j-1;
-            gbc.gridy = currentCandidatePositionY;
+            tempLabel2.setPreferredSize(new Dimension(275, 30));
+            gbc.gridx = j;
+            gbc.gridy = currentCandidatePositionY-1;
             tempLabel2.setHorizontalAlignment(AbstractButton.CENTER);
-            panel4.add(tempLabel2, gbc);
+            //panel4.add(tempLabel2, gbc);
             JRadioButton tempRadioButton = new JRadioButton();
-            tempRadioButton.setPreferredSize(new Dimension(30, 30));
+            tempRadioButton.setPreferredSize(new Dimension(275, 30));
             tempRadioButton.setHorizontalAlignment(AbstractButton.CENTER);
             tempRadioButton.setBackground(Color.CYAN);
-            gbc.gridy = currentCandidatePositionY+1;
+            tempRadioButton.setText(tempLabel2.getText());
+            gbc.gridy = currentCandidatePositionY;
             tempButtonGroup.add(tempRadioButton);
             buttons[i] = tempButtonGroup;
             panel4.add(tempRadioButton, gbc);
-            currentCandidatePositionY+=3;
+            currentCandidatePositionY+=2;
+            
             
         }
         cards.add(panel4, "Voting1");
@@ -189,8 +189,39 @@ public class GUI extends JFrame{
         panel5.setBorder(border);
         panel5.setBackground(Color.CYAN);
         panel5.add(new JLabel("Admin Panel"), gbc);
+        JButton shutdown = new JButton("Shutdown");
+        shutdown.addActionListener(new ActionListener(){
+        	public void actionPerformed(ActionEvent e){
+        		System.exit(0);
+        	}
+        });
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        panel5.add(shutdown, gbc);
+        JButton getTally = new JButton("Get Tally");
+        getTally.addActionListener(new ActionListener(){
+        	public void actionPerformed(ActionEvent e){
+        		String[] results;
+        		results = logic.getTalley();
+        		JOptionPane.showMessageDialog(frame, results);
+        	}
+        });
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        panel5.add(getTally, gbc);
         cards.add(panel5, "Admin Panel");
-
+        JButton cancel3 = new JButton("Cancel");
+        cancel3.addActionListener(new ActionListener(){
+        	public void actionPerformed(ActionEvent e){
+        		registrationID.setText("");
+        		cl.show(cards, "E-Voting");
+        	}
+        });
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        panel5.add(cancel3, gbc);
+        
+        cards.add(panel5, "Admin Panel");
         mvToRegisterBtn = new JButton("Register");
         gbc.gridx = 0;
         gbc.gridy = 1;
@@ -313,8 +344,8 @@ public class GUI extends JFrame{
             }});
         
         JButton confirmVoteBtn = new JButton("Confirm");
-        gbc.gridx = j-1;
-        gbc.gridy = currentCandidatePositionY+1;
+        gbc.gridx = j;
+        gbc.gridy = currentCandidatePositionY+3;
         panel4.add(confirmVoteBtn, gbc);
         confirmVoteBtn.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
@@ -375,7 +406,7 @@ public class GUI extends JFrame{
         
         cancelBtn2 = new JButton("Cancel");
         gbc.gridx = 0;
-        gbc.gridy = currentCandidatePositionY+1;
+        gbc.gridy = currentCandidatePositionY+3;
         cancelBtn2.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
             	for(int i=0; i<buttons.length; i++){
