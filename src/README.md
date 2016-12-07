@@ -3,7 +3,7 @@ and voterLogs.csv are present in the same directory as the compiled class
 files of the project. 
 
 To unlock the system when starting it, an administrator is required to
-input their password to do so. For this deliverable, the password to do so is "1111". 
+input their password to do so. For this deliverable, the password to do so is "111111". 
 
 Once you are using the program, and you want to access the administrator options
 (which include getting the current results of the election, shutting down the system,
