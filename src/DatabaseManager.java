@@ -52,7 +52,6 @@ public class DatabaseManager {
     public DatabaseManager() {
         try {
             this.conn = getConnection();
-            System.out.println("Connected to database");
         } catch (SQLException e) {
             System.out.println("ERROR: Could not connect to the database");
             e.printStackTrace();
@@ -292,7 +291,7 @@ public class DatabaseManager {
                 ResultSet rs = executeQuery(query);
                 if(!rs.isBeforeFirst()) {
                     //need to get ordering of the position
-                    String posQuery = "SELECT POSITION FROM " + candidatesTable +
+                    String posQuery = "SELECT ORDERING FROM " + candidatesTable +
                                    " WHERE POSITION='" + pieces[0] + "'";
                     ResultSet rs2 = executeQuery(posQuery);
                     rs2.first();
@@ -301,7 +300,7 @@ public class DatabaseManager {
                     String insertStmt = "INSERT INTO " + candidatesTable +
                                         " (POSITION, NAME, VOTES, IS_OFFICIAL, ORDERING) " +
                                         "VALUES ('" + pieces[0] + "','" +
-                                        pieces[1] + "',1,0," + position + ")";
+                                        pieces[1] + "',1,0," + ordering + ")";
                     executeUpdate(insertStmt);
                 } else {
                     String updateStmt = "UPDATE " + candidatesTable + 
@@ -335,7 +334,9 @@ public class DatabaseManager {
      *   index[1] - Vice President,Mike Pence,2
      *   ...
      */
-    private String[] joinCandidateList(ArrayList<String> candidates) {
+    private String[] joinCandidateList(ArrayList<String> candidates,
+                                       boolean addVotes) {
+
         ArrayList<String> positions = new ArrayList<String>();
         for(int i=0; i<candidates.size(); i++) {
             String[] thisResult = candidates.get(i).split(",");
@@ -352,6 +353,7 @@ public class DatabaseManager {
             String[] thisResult = candidates.get(k).split(",");
             int index = positions.indexOf(thisResult[0]);
             results[index] = results[index] + "," + thisResult[1];
+            if (addVotes) {results[index] = results[index]+","+thisResult[2];}
         }
         return results;
     }
@@ -365,8 +367,8 @@ public class DatabaseManager {
      * The decision to gather certain data is determined by the boolean
      * values passed to it. 
      */
-    private String[] parseCandidates(Boolean onlyOfficialCandidates,
-                                    Boolean getVotes) {
+    private String[] parseCandidates(boolean onlyOfficialCandidates,
+                                    boolean getVotes) {
 
         //This will change the SQL Query statement
         String selectClause;
@@ -384,7 +386,7 @@ public class DatabaseManager {
         }
 
         try {
-            String query = "SELECT POSITION, NAME " +
+            String query = selectClause + " " +
                             "FROM " + this.candidatesTable +
                             whereClause +
                             "ORDER BY ORDERING";
@@ -397,11 +399,11 @@ public class DatabaseManager {
                 while (rs.next()) {
                     String position = rs.getString("POSITION");
                     String name = rs.getString("NAME");
-
                     String result = position + "," + name;
+                    if (getVotes) { result = result + "," + rs.getInt("VOTES");}
                     candidates.add(result);
                 }
-                return this.joinCandidateList(candidates);
+                return this.joinCandidateList(candidates, getVotes);
 
             }
         } catch (SQLException e) {

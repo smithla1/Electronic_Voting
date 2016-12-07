@@ -149,7 +149,11 @@ public class TempCLI {
             else if(temp.equalsIgnoreCase("Y")){
             	 System.out.println("Please enter your 16 digit registration number");
             	 //takes user input and parses out alpha characters.
-            	 regID = userInput.nextLine().replaceAll("[a-zA-Z]+","");
+            	 regID = userInput.nextLine();
+                 while (! Pattern.matches("\\d{16}", regID)) {
+                    System.out.println("Sorry that was not formatted correctly. Please try again.");
+                    regID = userInput.nextLine();
+                 }
 
                  //See if they are an administrator
                  if (regID.substring(12,16).equalsIgnoreCase("0000")) {
