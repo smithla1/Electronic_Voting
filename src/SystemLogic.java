@@ -2,17 +2,16 @@ import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 
 public class SystemLogic {
-    //private DataBaseManagment output_class = new DataBaseManagment()
     private boolean isAdministrator;
     private boolean registeringOrVoting;
     private String[] candidates;
-    private FileManager myManager;
+    private DatabaseManager myManager;
     private registrationID currentUserID;
     
     public SystemLogic() {
         //initialize and or connect to database
         isAdministrator = false; //set this to false by default, according to our admin log in method
-        myManager = new FileManager();
+        myManager = new DatabaseManager();
     }
    
     protected boolean registerOrVote(boolean decision){

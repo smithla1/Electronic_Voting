@@ -129,21 +129,6 @@ public class test {
 	    System.out.println(sec.generateSalt());
 		
 
-
-
-		try 
-		{
-		    String filename= "MyFile.txt";
-    		FileWriter fw = new FileWriter(filename,true); //the true will append the new data
-    		fw.write("add a line\n");//appends the string to the file
-    		fw.close();
-		}
-
-		catch(IOException ioe)
-		{
- 		   System.err.println("IOException: " + ioe.getMessage());
-		}
-
 		String[] PID = {"Logan", "Dave", "Bob"};
 		for(int i = 0; i<PID.length; i++) {
 			System.out.println(PID[i]);
@@ -175,6 +160,34 @@ public class test {
 		String thisIsastring2 = "3702237466956700";
 		System.out.println(thisIsastring1==thisIsastring2);
 		System.out.println(thisIsastring1.equals(thisIsastring2));
+
+
+		System.out.println("Testing the hashCode function on 'John Doe Smith'");
+		String testHash = "John Doe Smith";
+		System.out.println(testHash.hashCode());
+
+		ArrayList<String> testList = new ArrayList<String>();
+		testList.add("This is a test");
+		System.out.println(testList.contains("This"));
+		System.out.println(testList.contains("This is a test"));
+
+		String[] testArray = new String[1];
+		testArray[0] = "This is a test";
+		System.out.println(testArray[0]);
+		testArray[0] = "I don't like this test";
+		System.out.println(testArray[0]);
+
+		System.out.println("Let's hashCode more things.");
+		System.out.println("Here is a code: 0123456789120000");
+		String adminCode = "0123456789120000";
+		System.out.println(adminCode.hashCode());
+
+		String fakeSSN = "123456789";
+		System.out.println(fakeSSN.hashCode());
+
+		System.out.println("Test " + 5);
+
+		System.out.println("The hash of 987654321 is: " + "987654321".hashCode());
 	}
 	
 

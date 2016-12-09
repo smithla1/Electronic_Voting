@@ -7,7 +7,7 @@
 .mtj.tmp/
 
 # Package Files #
-*.jar
+# *.jar Done to insure database connector is always avaliable
 *.war
 *.ear
 

@@ -14,6 +14,7 @@ import javax.swing.border.Border;
 import javax.swing.event.ChangeListener;
 
 
+
 public class GUI extends JFrame{
 	//Default generated VersionUID
 	private static final long serialVersionUID = 1L;
@@ -39,8 +40,8 @@ public class GUI extends JFrame{
         
         
         //setContentPane(contentPane);
-        
         //Main panel.. The UI ultimately always loops back to this initial panel.
+
         panel1 = new JPanel(new GridBagLayout());
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -51,6 +52,7 @@ public class GUI extends JFrame{
         JLabel welcome = new JLabel("Welcome to our E-Voting System!");
         welcome.setHorizontalAlignment(AbstractButton.CENTER);
         panel1.add(welcome, gbc);
+
         gbc.gridwidth = 1;
         cards.add(panel1, "E-Voting");
         	
@@ -134,6 +136,7 @@ public class GUI extends JFrame{
             }
         });
         cards.add(panel2, "Registration");
+
 	        //The registration panel has 2 buttons
 	        confirmRegisterBtn = new JButton("Confirm");
 	        gbc.gridx = 1;
@@ -229,6 +232,7 @@ public class GUI extends JFrame{
         panel3.add(tempLabel, gbc);
         cards.add(panel3, "Voting");
         
+
         //Registration ID panel has 2 buttons
 	        JButton confirmRegistrationIDBtn = new JButton("Confirm");
 	        gbc.gridx = 1;
@@ -276,35 +280,42 @@ public class GUI extends JFrame{
         panel4.setBorder(border);
         panel4.setBackground(Color.CYAN);
         String[] positionStrings = logic.getCandidates();
+
         int currentPositionY=0, currentCandidatePositionY=1, j=1, i=0;
         
         ButtonGroup[] buttons = new ButtonGroup[positionStrings.length];
         JTextField[] writeIns = new JTextField[positionStrings.length];
         for(i=0; i<positionStrings.length; i++){
+
         	String[] pieces = positionStrings[i].split(",");
         	gbc.gridx = 0;
         	gbc.gridy = currentPositionY;
         	currentPositionY+=2;
             JLabel tempLabel1 = new JLabel(pieces[0]);
             tempLabel1.setPreferredSize(new Dimension(250, 30));
+
             buttons[i] = new ButtonGroup();
             ButtonGroup tempButtonGroup = buttons[i];
+
             panel4.add(tempLabel1, gbc);
             
             for(j=1; j<pieces.length; j++){
             	gbc.gridx = j-1;
                 gbc.gridy = currentCandidatePositionY;
+
                 JRadioButton tempRadioButton = new JRadioButton(pieces[j]);
                 tempRadioButton.setPreferredSize(new Dimension(275, 60));
                 tempRadioButton.setHorizontalAlignment(AbstractButton.CENTER);
                 tempRadioButton.setBackground(Color.CYAN);
                 tempRadioButton.setHorizontalTextPosition(SwingConstants.CENTER);
                 tempRadioButton.setVerticalTextPosition(SwingConstants.TOP);
+
                 tempButtonGroup.add(tempRadioButton);
                 panel4.add(tempRadioButton, gbc);
             	
             }
             
+
             JRadioButton tempRadioButton = new JRadioButton("Abstain");
             tempRadioButton.setPreferredSize(new Dimension(275, 60));
             tempRadioButton.setHorizontalAlignment(AbstractButton.CENTER);
@@ -349,7 +360,7 @@ public class GUI extends JFrame{
             
         }
         cards.add(panel4, "Voting1");
-        
+
         //The actual voting panel has 2 buttons
         
 	        JButton confirmVoteBtn = new JButton("Confirm");
@@ -417,12 +428,14 @@ public class GUI extends JFrame{
 	        });
 	        panel4.add(cancelBtn2, gbc);
         
+
         panel5 = new JPanel(new GridBagLayout());
         gbc.gridx = 0;
         gbc.gridy = 0;
         panel5.setBorder(border);
         panel5.setBackground(Color.CYAN);
         panel5.add(new JLabel("Admin Panel"), gbc);
+
         
         //Admin panel has 3 buttons
         
@@ -469,11 +482,14 @@ public class GUI extends JFrame{
     }
     
     private String alphaStrip(String stringToStip){
+
     	return stringToStip.replaceAll("[^A-Za-z\\s]", "");
+
     }
     private String dateStrip(String stringToStip){
     	return stringToStip.replaceAll("[^0-9/]", "");
     }
+
     private String numStrip(String stringToStip){
     	return stringToStip.replaceAll("[^0-9]", "");
     }
@@ -490,6 +506,7 @@ public class GUI extends JFrame{
 
     private void setUIFont (javax.swing.plaf.FontUIResource f){
         Enumeration<Object> keys = UIManager.getDefaults().keys();
+
         while (keys.hasMoreElements()) {
           Object key = keys.nextElement();
           Object value = UIManager.get (key);
@@ -504,8 +521,10 @@ public class GUI extends JFrame{
             public void run() {
                 GUI frame = new GUI();
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
                 frame.setExtendedState(JFrame.MAXIMIZED_BOTH); 
                 frame.setUndecorated(true);
+
                 frame.pack();
                 frame.setLocationRelativeTo(null);
                 frame.setVisible(true);

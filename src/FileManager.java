@@ -60,7 +60,7 @@ public class FileManager {
     * The purpose of the method is to determine whether or not a given
     * user is registered to vote or not.
     *
-    * @param registrationID     a byte array that contains the user's
+    * @param registrationID     a String that contains the user's
     *                           registration ID.
     * 
     * @return                   a boolean value where true means
@@ -411,7 +411,8 @@ public class FileManager {
 
 
     public static void main(String[] args) {
-        //Create a fileManager class
+        //Create a FileManager class
+        
         FileManager myManager = new FileManager();
 
         //Create some dummy data
