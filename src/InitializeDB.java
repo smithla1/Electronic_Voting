@@ -22,7 +22,7 @@ public class InitializeDB {
     private final int portNumber = 3306;
 
     // The name of the database we are testing with (this default is installed with MySQL)
-    private final String dbName = "test";
+    private final String dbName = "evoting";
     
     // The name of the table containing the results (will change to results later)
     private final String candidatesTable = "Candidates";
@@ -85,7 +85,6 @@ public class InitializeDB {
             stmt.executeUpdate(command); // This will throw a SQLException if it fails
             return true;
         } finally {
-
             // This will run whether we throw an exception or not
             if (stmt != null) { stmt.close(); }
         }
@@ -110,6 +109,19 @@ public class InitializeDB {
                                   "ORDERING INT(10) UNSIGNED NOT NULL, " +
                                   "PRIMARY KEY (POSITION, NAME))";
                 executeUpdate(createStatement);
+
+                String updateStatement = "INSERT INTO Candidates " +
+                                         "(POSITION, NAME, VOTES, " +
+                                         "IS_OFFICIAL, ORDERING) " +
+                                         "VALUES " +
+                                         "('President', 'Hillary Clinton', 0, 1, 1), " +
+                                         "('President', 'Donald Trump', 0, 1, 1), " +
+                                         "('Vice President', 'Tim Kaine', 0, 1, 1), " +
+                                         "('Vice President', 'Mike Pence', 0, 1, 1), " +
+                                         "('Senator', 'Sebastian Van Delden', 0, 1, 1), " +
+                                         "('Senator', 'Xenia Mountrouidou', 0, 1, 1)";
+                executeUpdate(updateStatement);
+                System.out.println(updateStatement);
             }
 
             tables = dbm.getTables(null, null, "RegistrationLog", null);
