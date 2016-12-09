@@ -447,6 +447,8 @@ public class GUI extends JFrame{
             public void run() {
                 GUI frame = new GUI();
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                frame.setExtendedState(JFrame.MAXIMIZED_BOTH); 
+                frame.setUndecorated(true);
                 frame.pack();
                 frame.setLocationRelativeTo(null);
                 frame.setVisible(true);
