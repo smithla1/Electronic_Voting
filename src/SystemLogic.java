@@ -6,13 +6,13 @@ public class SystemLogic {
     private boolean isAdministrator;
     private boolean registeringOrVoting;
     private String[] candidates;
-    private fileManager myManager;
+    private FileManager myManager;
     private registrationID currentUserID;
     
     public SystemLogic() {
         //initialize and or connect to database
         isAdministrator = false; //set this to false by default, according to our admin log in method
-        myManager = new fileManager();
+        myManager = new FileManager();
     }
    
     protected boolean registerOrVote(boolean decision){

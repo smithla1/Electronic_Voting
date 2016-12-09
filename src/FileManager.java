@@ -8,7 +8,7 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class fileManager {
+public class FileManager {
     private FileWriter registration_out_file;
     private FileReader registration_in_file;
     private FileWriter voter_out_file;
@@ -16,7 +16,7 @@ public class fileManager {
     private FileWriter results_out_file;
     private FileReader results_in_file;
 
-    public fileManager() {
+    public FileManager() {
         //Do nothing
     }
 
@@ -412,7 +412,7 @@ public class fileManager {
 
     public static void main(String[] args) {
         //Create a fileManager class
-        fileManager myManager = new fileManager();
+        FileManager myManager = new FileManager();
 
         //Create some dummy data
         String[] myPID = {"Logan", "Werbenjagermanjensen", "Smith"};
