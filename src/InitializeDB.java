@@ -22,7 +22,7 @@ public class InitializeDB {
     private final int portNumber = 3306;
 
     // The name of the database we are testing with (this default is installed with MySQL)
-    private final String dbName = "evoting";
+    private final String dbName = "test";
     
     // The name of the table containing the results (will change to results later)
     private final String candidatesTable = "Candidates";
