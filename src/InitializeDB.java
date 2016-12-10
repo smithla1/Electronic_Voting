@@ -44,6 +44,7 @@ public class InitializeDB {
         try {
             createDBIfNotPresent();
             this.conn = getConnection();
+            this.manager = new DatabaseManager();
         } catch (SQLException e) {
             System.out.println("ERROR: Could not connect to the database");
             e.printStackTrace();
@@ -152,6 +153,25 @@ public class InitializeDB {
                                   "REG_ID INT(11) NOT NULL, " +
                                   "PRIMARY KEY (NAME, SSN))";
                 executeUpdate(createStatement);
+
+                String[] people = {"Agim Waheed Easton,12/07/1991,365129380",
+                                   "Khodadad Valter Sutherland,06/12/1991,433909217",
+                                   "Iago Chesley Simonsen,09/01/1993,222946292",
+                                   "Jozef Bile Simons,14/09/1881,856031810",
+                                   "Riad Zbigniew Stolarz,05/06/1985,766851422",
+                                   "Gisilfrid Mahendra Gregory,01/02/1979,619114509",
+                                   "Gwynfor Siem Elena,04/13/1993,741142046",
+                                   "Ahmad Alpha Araullo,01/01/1901,560594563",
+                                   "Jan Fiorenzo Michel,12/29/1995,340800654",
+                                   "Harris Zlatko Kennedy,01/22/1994,978726183"};
+                System.out.println("Registering People:");
+                for(String person : people) {
+                  String[] pid = person.split(",");
+                  registrationID key = new registrationID(pid);
+                  String regID = key.getRegistrationID();
+                  System.out.println(pid[0] + "," + pid[1] + "," + pid[2] + "," + regID);
+                  this.manager.addRegisteredVoter(regID, pid);
+                }
             } 
 
             tables = dbm.getTables(null, null, "VotingLog", null);
@@ -165,6 +185,9 @@ public class InitializeDB {
             return true;
         } catch (SQLException e) {
             System.out.println("DATABASE ERROR");
+            e.printStackTrace();
+            return false;
+        } catch (Exception e) {
             e.printStackTrace();
             return false;
         }

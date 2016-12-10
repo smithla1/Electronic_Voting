@@ -128,8 +128,8 @@ public class DatabaseManager {
      *                           social security number
      */
     protected void addRegisteredVoter( String registrationID, String[] PID) {
-        String name = PID[0].toUpperCase().hashCode();
-        String dob = PID[1].hashCode();
+        int name = PID[0].toUpperCase().hashCode();
+        int dob = PID[1].hashCode();
         int ssnHash = PID[2].hashCode();
 
         String query = "SELECT * FROM RegistrationLog WHERE " +
@@ -193,8 +193,8 @@ public class DatabaseManager {
      *              registration database, and false means they are not.
      */
     protected boolean isRegistered(String[] PID) {
-        String name = PID[0].toUpperCase().hashCode();
-        String dob = PID[1].hashCode();
+        int name = PID[0].toUpperCase().hashCode();
+        int dob = PID[1].hashCode();
         int ssnHash = PID[2].hashCode();
 
         String query = "SELECT * FROM " + registrationLog + " WHERE " +
