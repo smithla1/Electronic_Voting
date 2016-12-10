@@ -23,12 +23,14 @@ public class GUI extends JFrame{
     private final JPanel cards = new JPanel(cl);
     private final Border border = BorderFactory.createEmptyBorder(60, 60, 60, 60);
     private JTextField nameField=null,dobField=null,ssnField=null;
-    private JButton mvToRegisterBtn,confirmRegisterBtn,mvToVoteBtn,cancelBtn,cancelBtn1,cancelBtn2;
-    private JPanel panel1, panel2, panel3, panel4, panel5;
+    private JButton mvToRegisterBtn,confirmRegisterBtn,checkRegisterBtn,mvToVoteBtn,cancelBtn,cancelBtn1,cancelBtn2;
+    private JPanel panel1, panel2, panel3, panel4, panel5, panel6;
     private JFrame frame = new JFrame();
     private SystemLogic logic = new SystemLogic();
-    private String tempRegistrationID;
-    
+    private String tempRegistrationID,confirmationMessage;
+    private ActionListener tempActionListener, tempActionListener1;
+    private final String defaultName = "First Middle Last",defaultDOB = "MM/DD/YYYY",defaultSSN ="AAA-GG-SSSS";
+    private final String adminPass = "drowssap";
 
     public GUI() {
 
@@ -56,16 +58,151 @@ public class GUI extends JFrame{
         gbc.gridwidth = 1;
         cards.add(panel1, "E-Voting");
         	
-        	//This initial panel has 2 buttons
+        	//This initial panel has 3 buttons
 	        mvToRegisterBtn = new JButton("Register");
 	        gbc.gridx = 0;
 	        gbc.gridy = 1;
 	        panel1.add(mvToRegisterBtn, gbc);
 	        mvToRegisterBtn.addActionListener(new ActionListener() {
 	            public void actionPerformed(ActionEvent e) {
-	            	
+	            	confirmRegisterBtn.setText("Confirm");
+	            	for(int u=0; u<confirmRegisterBtn.getActionListeners().length; u++){
+		            	confirmRegisterBtn.removeActionListener(confirmRegisterBtn.getActionListeners()[u]);
+	            	}
+	            	confirmRegisterBtn.addActionListener(tempActionListener);
 	            	cl.show(cards, "Registration");
+	            	nameField.setText(defaultName);
+   					dobField.setText(defaultDOB);
+   					ssnField.setText(defaultSSN);
 	            }});
+	        checkRegisterBtn = new JButton("Check Registration");
+	        gbc.gridx = 0;
+	        gbc.gridy = 2;
+	        panel1.add(checkRegisterBtn, gbc);
+	        
+	        tempActionListener = new ActionListener() {
+	            public void actionPerformed(ActionEvent e) {
+	            	//Takes in inputs 
+	            	String name, dob, ssn,nameUnsafe, dobUnsafe, ssnUnsafe;
+	            	
+	            	nameUnsafe = nameField.getText();
+	            	dobUnsafe = dobField.getText();
+	            	ssnUnsafe = ssnField.getText();
+	            	name = alphaStrip(nameField.getText());
+	            	dob = dateStrip(dobField.getText());
+	            	ssn = dateStrip(ssnField.getText());
+	            	//Check to see if inputs are not empty
+	            	if(!(nameUnsafe.equals("") || dobUnsafe.equals("") || ssnUnsafe.equals(""))){
+	            		//Check to see if inputs are not their default values
+	            		if(!(nameUnsafe.equals(defaultName) || dobUnsafe.equals(defaultDOB) || ssnUnsafe.equals(defaultSSN))){
+	            			//check to make sure the input DOB is the correct length
+	            			if(dateStrip(dob).length() == 10){
+	            				//check to make sure the input SSN is the correct length
+	            				if(numStrip(ssn).length() == 9){
+	            					
+	                    			
+	                    			String [] PID = {name, dob, ssn};
+	                        		try {
+	                        			registrationID currentUserID = new registrationID(PID);
+	                        			if (!logic.userIsRegistered(PID)){
+	                        				logic.registerUser(PID, currentUserID.getRegistrationID());
+	                        				
+	                        				//Code to handle copying registrationID to system clipboard (Only after successful registration)
+	                        				tempRegistrationID = currentUserID.getRegistrationID();
+	                        				StringSelection stringSelection = new StringSelection(tempRegistrationID);
+	                        				Clipboard clpbrd = Toolkit.getDefaultToolkit().getSystemClipboard();
+	                        				clpbrd.setContents(stringSelection, null);
+	                        				
+	                        				//Informing the user on their successful registration.
+	                        				confirmationMessage = "Your have been successfully registered!" + "\n" 
+	    	                        				+ "Here is your registration ID, please do not lose it!" + "\n" + "(It has been copied to clipboard for your convenience)" + "\n" + 
+	    	                        				"Registration ID: ";
+	                        				JOptionPane.showMessageDialog(frame, confirmationMessage + currentUserID.getRegistrationID());
+	                        				
+	                        				//Registration is finished, time to reset the values of the textFields (To maintain privacy and reset for next voter)...
+	                        			
+	                        				cl.show(cards, "E-Voting");
+	                        				
+	                        			}
+	                        			else{JOptionPane.showMessageDialog(frame, "You have already registered!");}
+	                        		} catch (Exception exception) {
+	                        			exception.printStackTrace();
+	                        			JOptionPane.showMessageDialog(frame, "There was an error registering you.");
+	                        		}
+	            				}
+	            				else{JOptionPane.showMessageDialog(frame, "Please enter your SSN in the correct format: " + defaultSSN);}
+	            			}
+	            			else{JOptionPane.showMessageDialog(frame, "Please enter the date in the correct format: " + defaultDOB);}
+	            		}
+	            		else{JOptionPane.showMessageDialog(frame, "Please override the default vaules.");}
+	            	}
+	            	else{JOptionPane.showMessageDialog(frame, "Please do not leave any fields blank");}
+	            }};
+	        tempActionListener1 = new ActionListener() {
+        		public void actionPerformed(ActionEvent e) {
+	            	
+	            	//Takes in inputs 
+	            	String name, dob, ssn,nameUnsafe, dobUnsafe, ssnUnsafe;
+	            	
+	            	nameUnsafe = nameField.getText();
+	            	dobUnsafe = dobField.getText();
+	            	ssnUnsafe = ssnField.getText();
+	            	name = alphaStrip(nameField.getText());
+	            	dob = dateStrip(dobField.getText());
+	            	ssn = dateStrip(ssnField.getText());
+	            	//Check to see if inputs are not empty
+	            	if(!(nameUnsafe.equals("") || dobUnsafe.equals("") || ssnUnsafe.equals(""))){
+	            		//Check to see if inputs are not their default values
+	            		if(!(nameUnsafe.equals(defaultName) || dobUnsafe.equals(defaultDOB) || ssnUnsafe.equals(defaultSSN))){
+	            			//check to make sure the input DOB is the correct length
+	            			if(dateStrip(dob).length() == 10){
+	            				//check to make sure the input SSN is the correct length
+	            				if(numStrip(ssn).length() == 9){
+	            					
+	                    			
+	                    			String [] PID = {name, dob, ssn};
+	                        		try {
+	                        			if (!logic.userIsRegistered(PID)){
+	                        				JOptionPane.showMessageDialog(frame, "You have not registered!");
+	                        				//Registration is finished, time to reset the values of the textFields (To maintain privacy and reset for next voter)...
+	                        				
+	                        				cl.show(cards, "E-Voting");
+	                        				
+	                        				
+	                        			}
+	                        			else {	
+	                        				JOptionPane.showMessageDialog(frame, "You have already registered!");
+	                        				cl.show(cards, "E-Voting");	
+	                        					
+	                        			}
+	                        		} catch (Exception exception) {
+	                        			exception.printStackTrace();
+	                        			JOptionPane.showMessageDialog(frame, "There was an error checking to see if you are registered.");
+	                        		}
+	            				}
+	            				else{JOptionPane.showMessageDialog(frame, "Please enter your SSN in the correct format: " + defaultSSN);}
+	            			}
+	            			else{JOptionPane.showMessageDialog(frame, "Please enter the date in the correct format: " + defaultDOB);}
+	            		}
+	            		else{JOptionPane.showMessageDialog(frame, "Please override the default vaules.");}
+	            	}
+	            	else{JOptionPane.showMessageDialog(frame, "Please do not leave any fields blank");}
+	           }};
+	        
+	        checkRegisterBtn.addActionListener(new ActionListener(){
+	            public void actionPerformed(ActionEvent e) {
+	            	nameField.setText(defaultName);
+	        		dobField.setText(defaultDOB);
+	        		ssnField.setText(defaultSSN);
+	            	cl.show(cards, "Registration");
+	            	confirmRegisterBtn.setText("Check Registration");
+	            	
+	            	for(int u=0; u<confirmRegisterBtn.getActionListeners().length; u++){
+		            	confirmRegisterBtn.removeActionListener(confirmRegisterBtn.getActionListeners()[u]);
+	            	}
+	            	confirmRegisterBtn.addActionListener(tempActionListener1);
+			           
+	        }});  	
 	        mvToVoteBtn = new JButton("Start Voting");
 	        gbc.gridx = 1;
 	        gbc.gridy = 1;
@@ -85,9 +222,6 @@ public class GUI extends JFrame{
         
         //Beginning of the actual registration code
         String[] labels = {"Name: ", "DOB: ", "SSN: "};
-        String defaultName = "First Middle Last";
-        String defaultDOB = "MM/DD/YYYY";
-        String defaultSSN = "AAA-GG-SSSS";
         int numPairs = labels.length;
         //Create and populate the panel.
         for(int i=1; i<numPairs+1; i++){
@@ -142,77 +276,19 @@ public class GUI extends JFrame{
 	        gbc.gridx = 1;
 	        gbc.gridy = 4;
 	        panel2.add(confirmRegisterBtn, gbc);
-	        confirmRegisterBtn.addActionListener(new ActionListener() {
+	        
+	        cancelBtn = new JButton("Cancel");
+	        gbc.gridx = 0;
+	        gbc.gridy = 4;
+	        cancelBtn.addActionListener(new ActionListener() {
 	            public void actionPerformed(ActionEvent e) {
-	            	//Takes in inputs 
-	            	String name, dob, ssn,nameUnsafe, dobUnsafe, ssnUnsafe;
-	            	
-	            	nameUnsafe = nameField.getText();
-	            	dobUnsafe = dobField.getText();
-	            	ssnUnsafe = ssnField.getText();
-	            	name = alphaStrip(nameField.getText());
-	            	dob = dateStrip(dobField.getText());
-	            	ssn = dateStrip(ssnField.getText());
-	            	//Check to see if inputs are not empty
-	            	if(!(nameUnsafe.equals("") || dobUnsafe.equals("") || ssnUnsafe.equals(""))){
-	            		//Check to see if inputs are not their default values
-	            		if(!(nameUnsafe.equals(defaultName) || dobUnsafe.equals(defaultDOB) || ssnUnsafe.equals(defaultSSN))){
-	            			//check to make sure the input DOB is the correct length
-	            			if(dateStrip(dob).length() == 10){
-	            				//check to make sure the input SSN is the correct length
-	            				if(numStrip(ssn).length() == 9){
-	            					
-	                    			
-	                    			String [] PID = {name, dob, ssn};
-	                        		try {
-	                        			registrationID currentUserID = new registrationID(PID);
-	                        			if (!logic.userIsRegistered(PID)){
-	                        				logic.registerUser(PID, currentUserID.getRegistrationID());
-	                        				
-	                        				//Code to handle copying registrationID to system clipboard (Only after successful registration)
-	                        				tempRegistrationID = currentUserID.getRegistrationID();
-	                        				StringSelection stringSelection = new StringSelection(tempRegistrationID);
-	                        				Clipboard clpbrd = Toolkit.getDefaultToolkit().getSystemClipboard();
-	                        				clpbrd.setContents(stringSelection, null);
-	                        				
-	                        				//Informing the user on their successful registration.
-	                        				JOptionPane.showMessageDialog(frame, "Your have been successfully registered!" + "\n" 
-	                        				+ "Here is your registration ID, please do not lose it!" + "\n" + "(It has been copied to clipboard for your convenience)" + "\n" + 
-	                        				"Registration ID: " + currentUserID.getRegistrationID());
-	                        				
-	                        				//Registration is finished, time to reset the values of the textFields (To maintain privacy and reset for next voter)...
-	                        				nameField.setText(defaultName);
-	                        				dobField.setText(defaultDOB);
-	                        				ssnField.setText(defaultSSN);
-	                        				cl.show(cards, "E-Voting");
-	                        				
-	                        			}
-	                        			else{JOptionPane.showMessageDialog(frame, "You are already registered!");}
-	                        		} catch (Exception exception) {
-	                        			exception.printStackTrace();
-	                        			JOptionPane.showMessageDialog(frame, "There was an error registering you.");
-	                        		}
-	            				}
-	            				else{JOptionPane.showMessageDialog(frame, "Please enter your SSN in the correct format: " + defaultSSN);}
-	            			}
-	            			else{JOptionPane.showMessageDialog(frame, "Please enter the date in the correct format: " + defaultDOB);}
-	            		}
-	            		else{JOptionPane.showMessageDialog(frame, "Please override the default vaules.");}
-	            	}
-	            	else{JOptionPane.showMessageDialog(frame, "Please do not leave any fields blank");}
-	            }});
-		        cancelBtn = new JButton("Cancel");
-		        gbc.gridx = 0;
-		        gbc.gridy = 4;
-		        cancelBtn.addActionListener(new ActionListener() {
-		            public void actionPerformed(ActionEvent e) {
-		            	nameField.setText(defaultName);
-						dobField.setText(defaultDOB);
-						ssnField.setText(defaultSSN);
-		                cl.show(cards, "E-Voting");
-		            }
-		        });
-		        panel2.add(cancelBtn, gbc);
+	            	nameField.setText(defaultName);
+					dobField.setText(defaultDOB);
+					ssnField.setText(defaultSSN);
+	                cl.show(cards, "E-Voting");
+	            }
+	        });
+	        panel2.add(cancelBtn, gbc);
 
         panel3 = new JPanel(new GridBagLayout());
         gbc.gridx = 1;
@@ -243,7 +319,7 @@ public class GUI extends JFrame{
 	            	String inputRegID = numStrip(registrationID.getText());
 	            	if(!(inputRegID.equals(""))){
 	            		if(inputRegID.length() == 16){
-	            			if(inputRegID.substring(12).equals("0000"))
+	            			if(inputRegID.equals("0123456789120000"))
 	            				cl.show(cards, "Admin Panel");
 	            			else{
 		            			try {
@@ -428,14 +504,53 @@ public class GUI extends JFrame{
 	        });
 	        panel4.add(cancelBtn2, gbc);
         
-
-        panel5 = new JPanel(new GridBagLayout());
+	    panel5 = new JPanel(new GridBagLayout());
+	    gbc.gridx = 0;
+	    gbc.gridy = 0;
+	    panel5.setBorder(border);
+	    panel5.setBackground(Color.CYAN);
+	    panel5.add(new JLabel("Admin login"), gbc);
+	    gbc.gridx = 0;
+	    gbc.gridy = 1;
+	    panel5.add(new JLabel("Password:"), gbc);
+	    JPasswordField passField = new JPasswordField();
+        passField.setPreferredSize(new Dimension(275, 60));
+        gbc.gridx = 1;
+	    gbc.gridy = 1;
+	    panel5.add(passField,gbc);
+	    JButton continueToAdmin = new JButton("Continue");
+	    JButton cancel4 = new JButton("Cancel");
+	    gbc.gridx = 0;
+	    gbc.gridy = 2;
+	    panel5.add(cancel4,gbc);
+	    gbc.gridx = 1;
+	    gbc.gridy = 2;
+	    continueToAdmin.addActionListener(new ActionListener(){
+        	public void actionPerformed(ActionEvent e){
+        		if(passField.getText().equals(adminPass)){
+        			registrationID.setText("");
+        			passField.setText(null);
+        			cl.show(cards, "Admin Panel1");
+        		}
+        	}
+        });
+	    cancel4.addActionListener(new ActionListener(){
+        	public void actionPerformed(ActionEvent e){
+        			passField.setText(null);
+        			registrationID.setText("");
+        			cl.show(cards, "E-Voting");
+        		}
+        	});
+	    panel5.add(continueToAdmin,gbc);
+        
+	    cards.add(panel5, "Admin Panel");
+	    
+        panel6 = new JPanel(new GridBagLayout());
         gbc.gridx = 0;
         gbc.gridy = 0;
-        panel5.setBorder(border);
-        panel5.setBackground(Color.CYAN);
-        panel5.add(new JLabel("Admin Panel"), gbc);
-
+        panel6.setBorder(border);
+        panel6.setBackground(Color.CYAN);
+        panel6.add(new JLabel("Admin Panel"), gbc);
         
         //Admin panel has 3 buttons
         
@@ -447,7 +562,7 @@ public class GUI extends JFrame{
 	        });
 	        gbc.gridx = 0;
 	        gbc.gridy = 1;
-	        panel5.add(shutdown, gbc);
+	        panel6.add(shutdown, gbc);
 	        JButton getTally = new JButton("Get Tally");
 	        getTally.addActionListener(new ActionListener(){
 	        	public void actionPerformed(ActionEvent e){
@@ -458,8 +573,8 @@ public class GUI extends JFrame{
 	        });
 	        gbc.gridx = 0;
 	        gbc.gridy = 2;
-	        panel5.add(getTally, gbc);
-	        cards.add(panel5, "Admin Panel");
+	        panel6.add(getTally, gbc);
+	        cards.add(panel6, "Admin Panel1");
 	        JButton cancel3 = new JButton("Cancel");
 	        cancel3.addActionListener(new ActionListener(){
 	        	public void actionPerformed(ActionEvent e){
@@ -469,9 +584,9 @@ public class GUI extends JFrame{
 	        });
 	        gbc.gridx = 0;
 	        gbc.gridy = 3;
-	        panel5.add(cancel3, gbc);
+	        panel6.add(cancel3, gbc);
         
-        cards.add(panel5, "Admin Panel");
+        cards.add(panel6, "Admin Panel1");
         
         
         //End of panels 
@@ -500,7 +615,7 @@ public class GUI extends JFrame{
                 if (button.isSelected()) {
                     return button.getText();
                 }
-            }
+           }
     return null;
     }
 
@@ -519,6 +634,8 @@ public class GUI extends JFrame{
 		//Thread Safety
         EventQueue.invokeLater(new Runnable() {
             public void run() {
+            	InitializeDB db = new InitializeDB();
+            	db.initialize();
                 GUI frame = new GUI();
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
