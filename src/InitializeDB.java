@@ -133,6 +133,8 @@ public class InitializeDB {
                                          "VALUES " +
                                          "('President', 'Hillary Clinton', 0, 1, 1), " +
                                          "('President', 'Donald Trump', 0, 1, 1), " +
+                                         "('President', 'Gary Johnson', 0, 1, 1), " +
+                                         "('President', 'Jill Stein', 0, 1, 1), " +
                                          "('Vice President', 'Tim Kaine', 0, 1, 2), " +
                                          "('Vice President', 'Mike Pence', 0, 1, 2), " +
                                          "('Senator', 'Sebastian Van Delden', 0, 1, 3), " +
