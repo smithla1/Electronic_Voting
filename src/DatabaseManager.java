@@ -34,7 +34,7 @@ public class DatabaseManager {
     private final int portNumber = 3306;
 
     // The name of the database we are testing with (this default is installed with MySQL)
-    private final String dbName = "test";
+    private final String dbName = "LSAM_evoting";
     
     // The name of the table containing the results (will change to results later)
     private final String candidatesTable = "Candidates";

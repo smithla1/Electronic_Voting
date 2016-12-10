@@ -22,7 +22,7 @@ public class InitializeDB {
     private final int portNumber = 3306;
 
     // The name of the database we are testing with (this default is installed with MySQL)
-    private final String dbName = "test";
+    private final String dbName = "LSAM_evoting";
     
     // The name of the table containing the results (will change to results later)
     private final String candidatesTable = "Candidates";
@@ -42,6 +42,7 @@ public class InitializeDB {
 
     public InitializeDB() {
         try {
+            createDBIfNotPresent();
             this.conn = getConnection();
         } catch (SQLException e) {
             System.out.println("ERROR: Could not connect to the database");
@@ -57,7 +58,7 @@ public class InitializeDB {
      * @return
      * @throws SQLException
      */
-    public Connection getConnection() throws SQLException {
+    private Connection getConnection() throws SQLException {
         Connection conn = null;
         Properties connectionProps = new Properties();
         connectionProps.put("user", this.userName);
@@ -78,7 +79,7 @@ public class InitializeDB {
      * 
      * @throws SQLException If something goes wrong
      */
-    public boolean executeUpdate(String command) throws SQLException {
+    private boolean executeUpdate(String command) throws SQLException {
         Statement stmt = null;
         try {
             stmt = this.conn.createStatement();
@@ -91,10 +92,26 @@ public class InitializeDB {
     }
 
 
+    private void createDBIfNotPresent() throws SQLException {
+        Connection conn = null;
+        conn = DriverManager.getConnection("jdbc:mysql://" + this.serverName +
+                                           ":" + this.portNumber + "/" + "?useSSL=false",
+                                           userName, password);
+        Statement stmt = null;
+        stmt = conn.createStatement();
+        String createStatement = "CREATE DATABASE IF NOT EXISTS " + this.dbName;
+
+        stmt.executeUpdate(createStatement);
+        conn.close();
+    }
+
+
     public boolean initialize() {
         try {
             //First we need to check if the tables are present in the database
             DatabaseMetaData dbm = this.conn.getMetaData();
+
+            // We are going to create the database if it does not exist
 
             // First check for 
             ResultSet tables = dbm.getTables(null, null, "CANDIDATES", null);
@@ -116,12 +133,11 @@ public class InitializeDB {
                                          "VALUES " +
                                          "('President', 'Hillary Clinton', 0, 1, 1), " +
                                          "('President', 'Donald Trump', 0, 1, 1), " +
-                                         "('Vice President', 'Tim Kaine', 0, 1, 1), " +
-                                         "('Vice President', 'Mike Pence', 0, 1, 1), " +
-                                         "('Senator', 'Sebastian Van Delden', 0, 1, 1), " +
-                                         "('Senator', 'Xenia Mountrouidou', 0, 1, 1)";
+                                         "('Vice President', 'Tim Kaine', 0, 1, 2), " +
+                                         "('Vice President', 'Mike Pence', 0, 1, 2), " +
+                                         "('Senator', 'Sebastian Van Delden', 0, 1, 3), " +
+                                         "('Senator', 'Xenia Mountrouidou', 0, 1, 3)";
                 executeUpdate(updateStatement);
-                System.out.println(updateStatement);
             }
 
             tables = dbm.getTables(null, null, "RegistrationLog", null);
