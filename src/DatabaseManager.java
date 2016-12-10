@@ -278,8 +278,56 @@ public class DatabaseManager {
     }
 
 
+    private String verifyVote() {
+        try {
+            int numberOfVoters = 0;
+            String selectStatement = "SELECT COUNT(REG_ID) FROM VotingLog";
+            ResultSet rs = executeQuery(selectStatement);
+            if (!rs.isBeforeFirst()) {
+                numberOfVoters = 0;
+            } else {
+                rs.first();
+                numberOfVoters = rs.getInt("COUNT(REG_ID)");
+            }
+            selectStatement = "SELECT MAX(VOTES) FROM Candidates";
+            rs = executeQuery(selectStatement);
+            rs.first();
+            int maxVotesForACandidate = rs.getInt("MAX(VOTES)");
+
+            String status;
+            if (numberOfVoters >= maxVotesForACandidate) {
+                status = "VALID CERTIFICATION";
+            } else {
+                status = "INVALID CERTIFICATION - POTENTIAL FRAUD DETECTED, USE PAPER BALLOTS";
+            }
+            String returnString = "VOTE CERTIFICATION: " + status + "\n" + 
+                                numberOfVoters + 
+                                " voters have voted with a maximum of " +
+                                maxVotesForACandidate +
+                                " votes for any one candidate.";
+            return returnString;
+        } catch (SQLException e) {
+            System.out.println("DATABASE ERROR");
+            e.printStackTrace();
+            return "";
+        }
+    }
+
+    private void printPaperBallot(String[] selection) {
+        for (String position: selection) {
+            String[] pieces = position.split(",");
+            if (pieces[1].equals("#")) {
+                System.out.println("Position: " + pieces[0] + "\tAbstained");
+            } else {
+                System.out.println("Position: " + pieces[0] + "\t1 Vote For " + pieces[1]);
+            }
+        }
+    }
+
+
     protected void castVote( String[] selection, String registrationID) {
         addVote(registrationID);
+        printPaperBallot(selection);
 
         try {
             for (String position : selection) {
@@ -424,7 +472,15 @@ public class DatabaseManager {
     }
 
     protected String[] getTalley() {
-        return parseCandidates(false, true);
+        String[] tally = parseCandidates(false, true);
+        String cert = verifyVote();
+
+        String[] returnArray = new String[tally.length+1];
+        returnArray[0] = cert;
+        for (int i=0; i<tally.length; i++) {
+            returnArray[i+1] = tally[i];
+        }
+        return returnArray;
     }
 
 
@@ -438,41 +494,9 @@ public class DatabaseManager {
 
         // Let us vote for Bernie
 
+        
+
         try {
-        PasswordEncryptionService secure = new PasswordEncryptionService();
-        byte[] salt = {
-            (byte) 0xde, (byte) 0x33, (byte) 0x10, (byte) 0x12,
-            (byte) 0xde, (byte) 0x33, (byte) 0x10, (byte) 0x12,
-        };
-
-        String superSecretPassword = "drowssap";
-        byte[] securePassword = secure.getEncryptedPassword(superSecretPassword, salt);
-
-        PreparedStatement insert = this.conn.prepareStatement("INSERT INTO ByteTable (num, bytes) VALUES (1, ?)");
-        insert.setBytes(1, securePassword);
-        insert.executeUpdate();
-        insert.close();
-
-        Statement select = this.conn.createStatement();
-        ResultSet rs = select.executeQuery("SELECT bytes FROM ByteTable WHERE num=1");
-        rs = select.getResultSet();
-        try {
-            while (rs.next()) {
-                byte[] receivedSalt = rs.getBytes("bytes");
-                if (Arrays.equals(securePassword, receivedSalt)) System.out.println("match");
-                    else System.out.println("no match");
-                }
-        } finally {
-                rs.close();
-                select.close();
-        }
-
-        } catch (Exception e) {
-            System.out.println("ERROR");
-            e.printStackTrace();
-        } 
-
-/*        try {
             String voteString = "UPDATE " + this.candidatesTable +
                                 " SET VOTES = VOTES + 1 " +
                                 "WHERE POSITION='President' AND NAME='Bernard Sanders'";
@@ -558,7 +582,7 @@ public class DatabaseManager {
             "\nPlease not that this will only work here, as I am ignoring checks on " +
             "people who have already voted.");
         String[] dannielVote = {"President,Ted Cruz", "Vice President,Sarah Palin", "Senator,#", "Governor,#"};
-        castVote(dannielVote, regId);*/
+        castVote(dannielVote, regId);
 
     }
 
