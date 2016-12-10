@@ -1,7 +1,0 @@
-UPDATE Candidates
-SET VotesRecieved=VotesRecieved + 1
-WHERE Position="President" AND Name="Jon Snow";
-
-SELECT * FROM Candidates;
-
-Also look into being able to lock the database when updating and querying
