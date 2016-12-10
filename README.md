@@ -1,17 +1,15 @@
-To run this project, please insure the the files candidates.csv, regLog.csv,
-and voterLogs.csv are present in the same directory that you are in when
-running the program. If you run it from the top level directory of our
-project, then make sure that the aforementioned files are in that directory.
+To run this project: run the main class of GUI.java
 
 To unlock the system when starting it, an administrator is required to
 
 input their password to do so. For this deliverable, the password to do
-so is "111111". 
+so is "1111". 
 
 Once you are using the program, and you want to access the administrator options
-(which include getting the current results of the election, shutting down
-the system, and exiting the administrator options), you will notice that the
-option to log in as an administrator is hidden. To log in, follow these steps:
+(which include getting the current results of the election/certifying the votes,
+shutting down the system, and exiting the administrator options), you will
+notice that the option to log in as an administrator is hidden. To log in,
+follow these steps:
     1. When prompted to vote or register (Are you registered?), input Y,
        indicating that you are registered.
     2. The system will then prompt you for a 16 digit registration number (this
@@ -43,7 +41,12 @@ This command can be used to compile the source code with the mysql jar file:
   javac -cp .:/src/mysql-connector-java-5.1.40-bin.jar -d bin -sourcepath src src/*.java
 
 And to run the code:
-  java -cp .:mysql-connector-java-5.1.40-bin.jar:./bin TempCLI
+  java -cp .:mysql-connector-java-5.1.40-bin.jar:./bin GUI
 
-The above statements are done from the top level directory of the project, with
-the associated csv files there as well.
+The above statements are done from the top level directory of the project.
+
+PLEASE NOTE: You must have an instance of MySQL running to run our program. We
+assume the following things:
+1. the username is "root"
+2. the password is "toor"
+3. the host is "localhost"

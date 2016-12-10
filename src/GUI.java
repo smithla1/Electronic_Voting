@@ -30,7 +30,7 @@ public class GUI extends JFrame{
     private String tempRegistrationID,confirmationMessage;
     private ActionListener tempActionListener, tempActionListener1;
     private final String defaultName = "First Middle Last",defaultDOB = "MM/DD/YYYY",defaultSSN ="AAA-GG-SSSS";
-    private final String adminPass = "drowssap";
+    private final String adminPass = "1111";
 
     public GUI() {
 
