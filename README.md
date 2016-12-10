@@ -1,7 +1,6 @@
 To run this project: run the main class of GUI.java
 
 To unlock the system when starting it, an administrator is required to
-
 input their password to do so. For this deliverable, the password to do
 so is "1111". 
 
@@ -50,3 +49,10 @@ assume the following things:
 1. the username is "root"
 2. the password is "toor"
 3. the host is "localhost"
+
+In addition, the file in the root directory of our project "registeredVoters.csv"
+contains ten pre-registered voters. Their information is stored in plain text to
+give you an idea of the information we collect. In addition, the fourth number is
+the registration ID that you will need if you want to have them vote. It is only
+for demonstrative purposes that these ten voters have their information in plain
+text. All other voters have their information hashed inside the database.
