@@ -449,7 +449,6 @@ public class GUI extends JFrame{
 	        		String[] myVote = new String[positionStrings.length];
 	        		for(int l=0; l<positionStrings.length; l++){
 	        			pieces = positionStrings[l].split(",");
-	        			System.out.println(buttons[l].getButtonCount()-1);
 	        			for(int j=0; j<buttons[l].getButtonCount(); j++){
 	        				if(getSelectedButtonText(buttons[l]).equals("Write In")){
 	        					myVote[l]=pieces[0] + "," + alphaStrip(writeIns[l].getText());
