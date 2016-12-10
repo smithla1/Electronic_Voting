@@ -74,8 +74,9 @@ public class PasswordEncryptionService {
 	 
 	 System.out.println(salt);
 	 
-	 String myPassword = "password1";
+	 String myPassword = "passwordpasswordpasswordpassword1";
 	 byte[] securePassword = test.getEncryptedPassword(myPassword, salt);
+   System.out.println(securePassword.length);
 	 
 	 System.out.println(securePassword);
 	 

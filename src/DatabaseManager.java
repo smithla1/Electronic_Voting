@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.util.Properties;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.sql.PreparedStatement;
 
 /**
  * This class will connect to a database and issue queries and updates as
@@ -44,6 +45,9 @@ public class DatabaseManager {
 
     // The name of the table containing the voting log
     private final String votingLog = "VotingLog";
+
+    // This will test whether our encryption is working
+    private final String testBytes = "ByteTable";
 
     // The connection to the database used by the various methods of this class
     private Connection conn = null;
@@ -433,7 +437,42 @@ public class DatabaseManager {
         // Connect to MySQL
 
         // Let us vote for Bernie
+
         try {
+        PasswordEncryptionService secure = new PasswordEncryptionService();
+        byte[] salt = {
+            (byte) 0xde, (byte) 0x33, (byte) 0x10, (byte) 0x12,
+            (byte) 0xde, (byte) 0x33, (byte) 0x10, (byte) 0x12,
+        };
+
+        String superSecretPassword = "drowssap";
+        byte[] securePassword = secure.getEncryptedPassword(superSecretPassword, salt);
+
+        PreparedStatement insert = this.conn.prepareStatement("INSERT INTO ByteTable (num, bytes) VALUES (1, ?)");
+        insert.setBytes(1, securePassword);
+        insert.executeUpdate();
+        insert.close();
+
+        Statement select = this.conn.createStatement();
+        ResultSet rs = select.executeQuery("SELECT bytes FROM ByteTable WHERE num=1");
+        rs = select.getResultSet();
+        try {
+            while (rs.next()) {
+                byte[] receivedSalt = rs.getBytes("bytes");
+                if (Arrays.equals(securePassword, receivedSalt)) System.out.println("match");
+                    else System.out.println("no match");
+                }
+        } finally {
+                rs.close();
+                select.close();
+        }
+
+        } catch (Exception e) {
+            System.out.println("ERROR");
+            e.printStackTrace();
+        } 
+
+/*        try {
             String voteString = "UPDATE " + this.candidatesTable +
                                 " SET VOTES = VOTES + 1 " +
                                 "WHERE POSITION='President' AND NAME='Bernard Sanders'";
@@ -519,7 +558,7 @@ public class DatabaseManager {
             "\nPlease not that this will only work here, as I am ignoring checks on " +
             "people who have already voted.");
         String[] dannielVote = {"President,Ted Cruz", "Vice President,Sarah Palin", "Senator,#", "Governor,#"};
-        castVote(dannielVote, regId);
+        castVote(dannielVote, regId);*/
 
     }
 
