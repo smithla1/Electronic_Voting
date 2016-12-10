@@ -128,15 +128,12 @@ public class DatabaseManager {
      *                           social security number
      */
     protected void addRegisteredVoter( String registrationID, String[] PID) {
-        String name = PID[0].toUpperCase();
-        String dobPieces[] = PID[1].split("/");
-        String newDOBFormat = dobPieces[2] + "-" +
-                              dobPieces[0] + "-" +
-                              dobPieces[1];
+        String name = PID[0].toUpperCase().hashCode();
+        String dob = PID[1].hashCode();
         int ssnHash = PID[2].hashCode();
 
         String query = "SELECT * FROM RegistrationLog WHERE " +
-                       "NAME='" + name + "' AND DOB='" + newDOBFormat + 
+                       "NAME='" + name + "' AND DOB='" + dob + 
                        "' AND SSN=" + ssnHash;
         int regIDHash = registrationID.hashCode();
 
@@ -144,7 +141,7 @@ public class DatabaseManager {
             if (!isRegistered(PID)) {
                 String updateStmt = "INSERT INTO " + this.registrationLog + 
                                     " (NAME, DOB, SSN, REG_ID)" +
-                                    " VALUES ('" + name + "', '" + newDOBFormat +
+                                    " VALUES ('" + name + "', '" + dob +
                                     "', " + ssnHash + ", " + regIDHash + ")";
                 executeUpdate(updateStmt);
             }
@@ -196,15 +193,12 @@ public class DatabaseManager {
      *              registration database, and false means they are not.
      */
     protected boolean isRegistered(String[] PID) {
-        String name = PID[0].toUpperCase();
-        String dobPieces[] = PID[1].split("/");
-        String newDOBFormat = dobPieces[2] + "-" +
-                              dobPieces[0] + "-" +
-                              dobPieces[1];
+        String name = PID[0].toUpperCase().hashCode();
+        String dob = PID[1].hashCode();
         int ssnHash = PID[2].hashCode();
 
         String query = "SELECT * FROM " + registrationLog + " WHERE " +
-                       "NAME='" + name + "' AND DOB='" + newDOBFormat + 
+                       "NAME='" + name + "' AND DOB='" + dob + 
                        "' AND SSN=" + ssnHash;
         try {
             ResultSet rs = executeQuery(query);  

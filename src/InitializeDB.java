@@ -146,8 +146,8 @@ public class InitializeDB {
 
             if (!tables.next()) {
                 createStatement = "CREATE TABLE RegistrationLog " + " ( " +
-                                  "NAME varchar(70) NOT NULL, " +
-                                  "DOB DATE NOT NULL, " +
+                                  "NAME INT(11) NOT NULL, " +
+                                  "DOB INT(11) NOT NULL, " +
                                   "SSN INT(11) NOT NULL, " +
                                   "REG_ID INT(11) NOT NULL, " +
                                   "PRIMARY KEY (NAME, SSN))";
