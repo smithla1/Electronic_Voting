@@ -56,3 +56,8 @@ give you an idea of the information we collect. In addition, the fourth number i
 the registration ID that you will need if you want to have them vote. It is only
 for demonstrative purposes that these ten voters have their information in plain
 text. All other voters have their information hashed inside the database.
+
+For the purpose of recounts, we have backup ballots being printed to the command
+line. For the purpose of recounts, please refer to these. Often recounts happen
+because people do not trust technology and would prefer a lower tech paper ballot
+to assuage their concerns of fraud.
