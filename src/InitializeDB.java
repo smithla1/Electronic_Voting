@@ -112,9 +112,7 @@ public class InitializeDB {
             // Check if the tables are present in the database
             DatabaseMetaData dbm = this.conn.getMetaData();
 
-            // Create the database if it does not exist
-
-            // First check for 
+            // Check if each necessary table exists
             ResultSet tables = dbm.getTables(null, null, "CANDIDATES", null);
             String createStatement;
             if (!tables.next()) {
