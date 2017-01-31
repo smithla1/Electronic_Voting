@@ -113,10 +113,11 @@ public class InitializeDB {
             DatabaseMetaData dbm = this.conn.getMetaData();
 
             // Check if each necessary table exists
-            ResultSet tables = dbm.getTables(null, null, "CANDIDATES", null);
+            ResultSet tables = dbm.getTables(null, null, "Candidates", null);
             String createStatement;
-            if (!tables.next()) {
-                // Table exists
+
+            if (!tables.isBeforeFirst()) {
+                // Table does not exist
                 createStatement = "CREATE TABLE Candidates " + " ( " +
                                   "POSITION varchar(30) NOT NULL, " +
                                   "NAME varchar(70) NOT NULL, " +
@@ -141,7 +142,8 @@ public class InitializeDB {
 
             tables = dbm.getTables(null, null, "RegistrationLog", null);
 
-            if (!tables.next()) {
+            if (!tables.isBeforeFirst()) {
+                // Table does not exist
                 createStatement = "CREATE TABLE RegistrationLog " + " ( " +
                                   "NAME INT(11) NOT NULL, " +
                                   "DOB INT(11) NOT NULL, " +
@@ -172,7 +174,8 @@ public class InitializeDB {
 
             tables = dbm.getTables(null, null, "VotingLog", null);
 
-            if (!tables.next()) {
+            if (!tables.isBeforeFirst()) {
+                // Table does not exist
                 createStatement = "CREATE TABLE VotingLog " + " ( " +
                                   "REG_ID INT(11) NOT NULL, " +
                                   "PRIMARY KEY (REG_ID))";
