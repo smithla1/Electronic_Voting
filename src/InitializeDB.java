@@ -109,10 +109,10 @@ public class InitializeDB {
 
     public boolean initialize() {
         try {
-            //First we need to check if the tables are present in the database
+            // Check if the tables are present in the database
             DatabaseMetaData dbm = this.conn.getMetaData();
 
-            // We are going to create the database if it does not exist
+            // Create the database if it does not exist
 
             // First check for 
             ResultSet tables = dbm.getTables(null, null, "CANDIDATES", null);
@@ -162,7 +162,7 @@ public class InitializeDB {
                                    "Ahmad Alpha Araullo,01/01/1901,560594563",
                                    "Jan Fiorenzo Michel,12/29/1995,340800654",
                                    "Harris Zlatko Kennedy,01/22/1994,978726183"};
-                System.out.println("Registering People:");
+                System.out.println("Registering Sample Voters:");
                 for(String person : people) {
                   String[] pid = person.split(",");
                   registrationID key = new registrationID(pid);
